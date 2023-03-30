@@ -1,0 +1,19 @@
+### start-up check
+
+GET {{host}}/health/started
+
+### liveness check
+
+GET {{host}}/health/live
+
+### readiness check
+
+GET {{host}}/health/ready
+
+### index
+
+GET {{host}}/api/sample/hello
+
+### delay
+
+GET {{host}}/api/delay/10
