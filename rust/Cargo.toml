@@ -5,8 +5,17 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[dependencies]
+# [profile.release]
+# strip = true  # Automatically strip symbols from the binary.
+# lto = true # enable link-time optimization
 
-[dependencies.rocket]
-version = "0.5.0-rc.2"
-features = ["json"]
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+rocket = { version = "0.5.0-rc.3", features = ["json"] }
+figment = { version = "0.10", features = ["toml", "env"] }
+sqlx = { version = "0.6", features = ["runtime-tokio-native-tls", "postgres", "migrate", "chrono"] }
+reqwest = { version = "0.11", features = ["json"] }
+chrono = { version = "0.4.24", features = ["serde"] }
+log = "0.4"
+ecs-logger = "1"
+futures = "0.3"

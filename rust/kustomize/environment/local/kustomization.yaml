@@ -3,3 +3,34 @@ kind: Kustomization
 
 resources:
   - ../../base
+  - database
+  - otel-collector
+  - wiremock
+
+configMapGenerator:
+  - name: app-config
+    behavior: merge
+    literals:
+      - RUST_BACKTRACE=1
+      - RUST_LOG=warn,app=debug
+      - APP_DATABASE_HOST=rust-database
+      - APP_DATABASE_PORT=5432
+      - APP_DATABASE_NAME=rust-database
+  - name: rust-flyway-config
+    behavior: merge
+    literals:
+      - FLYWAY_URL=jdbc:postgresql://rust-database:5432/rust-database
+  - name: rust-flyway-migrations
+    behavior: merge
+    files:
+      - resources/migrations/V0.1.0.100__initialize-data-table.sql
+
+secretGenerator:
+  - name: app-secrets
+    literals:
+      - APP_DATABASE_USERNAME=database_user
+      - APP_DATABASE_PASSWORD=database_password
+  - name: rust-flyway-secrets
+    literals:
+      - FLYWAY_USER=database_user
+      - FLYWAY_PASSWORD=database_password

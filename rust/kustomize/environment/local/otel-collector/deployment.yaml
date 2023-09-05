@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rust-otel-collector
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: rust-otel-collector
+  template:
+    metadata:
+      labels:
+        name: rust-otel-collector
+    spec:
+      containers:
+        - name: rust-otel-collector
+          image: rust-otel-collector
+          ports:
+            - containerPort: 13133
+            - containerPort: 4317

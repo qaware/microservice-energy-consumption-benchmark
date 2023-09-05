@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rust-wiremock-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: rust-wiremock-server
+  template:
+    metadata:
+      labels:
+        name: rust-wiremock-server
+    spec:
+      containers:
+        - name: rust-wiremock-server
+          image: rust-wiremock
+          ports:
+            - containerPort: 8888

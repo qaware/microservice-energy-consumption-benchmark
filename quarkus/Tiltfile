@@ -1,0 +1,10 @@
+custom_build(
+    'quarkus',
+    './gradlew quarkusBuild',
+    command_bat='gradlew quarkusBuild',
+    tag='latest',
+    deps=['src/main/java', 'src/main/resources', 'gradle', 'kustomize', 'build.gradle', 'gradle.properties', 'settings.gradle'])
+
+k8s_yaml(kustomize('kustomize/environment/local'))
+
+k8s_resource(workload='quarkus', port_forwards=['8083:8083'])

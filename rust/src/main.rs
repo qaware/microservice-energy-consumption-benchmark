@@ -1,45 +1,34 @@
-#[macro_use]
-extern crate rocket;
+use database::Database;
 
-use rocket::{Build, Rocket};
-use rocket::serde::{json::Json, Serialize};
-use rocket::tokio::time::{Duration, sleep};
+mod delay;
+mod health;
+mod data;
+mod database;
+mod resources;
 
-#[derive(Serialize)]
-#[serde(crate = "rocket::serde")]
-struct HealthCheck<'a> {
-    status: &'a str,
+#[rocket::main]
+async fn main() -> Result<(), rocket::Error> {
+    ecs_logger::init();
+
+    // TODO: improve error handling
+    let db = Database::new().await.unwrap();
+
+    let _ = rocket::build()
+        .manage(db)
+        .mount("/", rocket::routes![
+            resources::openapi])
+        .mount("/health", rocket::routes![
+            health::started,
+            health::live,
+            health::ready])
+        .mount("/api/delay", rocket::routes![
+            delay::delay])
+        .mount("/api/data", rocket::routes![
+            data::get_data_for_id,
+            data::put_data_for_id])
+        .launch()
+        .await?;
+
+    Ok(())
 }
 
-#[get("/started")]
-fn health_started() -> Json<HealthCheck<'static>> {
-    Json(HealthCheck { status: "OK" })
-}
-
-#[get("/live")]
-fn health_live() -> Json<HealthCheck<'static>> {
-    Json(HealthCheck { status: "OK" })
-}
-
-#[get("/ready")]
-fn health_ready() -> Json<HealthCheck<'static>> {
-    Json(HealthCheck { status: "OK" })
-}
-
-#[get("/hello")]
-fn index() -> &'static str {
-    "Hello, world!"
-}
-
-#[get("/delay/<seconds>")]
-async fn delay(seconds: u64) -> String {
-    sleep(Duration::from_secs(seconds)).await;
-    format!("Waited for {} seconds", seconds)
-}
-
-#[launch]
-fn rocket() -> Rocket<Build> {
-    rocket::build()
-        .mount("/health", routes![health_started, health_live, health_ready])
-        .mount("/api/sample", routes![index, delay])
-}

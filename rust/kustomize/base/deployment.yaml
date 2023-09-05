@@ -8,25 +8,52 @@ spec:
       app: rust
   strategy:
     type: RollingUpdate
-  revisionHistoryLimit: 10
   template:
     metadata:
       labels:
         app: rust
     spec:
+      initContainers:
+        - command:
+            - flyway
+            - migrate
+          image: flyway/flyway:9.17
+          imagePullPolicy: IfNotPresent
+          name: flyway-migrate
+          envFrom:
+            - configMapRef:
+                name: rust-flyway-config
+            - secretRef:
+                name: rust-flyway-secrets
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "800Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1000Mi"
+          volumeMounts:
+            - name: flyway-migrations-volume
+              mountPath: /flyway/sql/schema
+              readOnly: true
       containers:
         - name: rust
           image: rust
           imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: app-config
+            - secretRef:
+                name: app-secrets
           ports:
             - containerPort: 8081
           resources:
             requests:
-              cpu: "25m"
-              memory: "20Mi"
+              cpu: "50m"
+              memory: "50Mi"
             limits:
-              cpu: "100m"
-              memory: "500Mi"
+              cpu: "300m"
+              memory: "100Mi"
           startupProbe:
             httpGet:
               path: /health/started
@@ -45,3 +72,7 @@ spec:
               port: 8081
             periodSeconds: 2
             failureThreshold: 5
+      volumes:
+        - name: flyway-migrations-volume
+          configMap:
+            name: rust-flyway-migrations

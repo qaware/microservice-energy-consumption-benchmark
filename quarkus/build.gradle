@@ -1,0 +1,40 @@
+plugins {
+    id "java"
+    id "io.quarkus" version "${quarkusVersion}"
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Quarkus
+    implementation enforcedPlatform("io.quarkus:quarkus-bom:${quarkusVersion}")
+    implementation "io.quarkus:quarkus-arc"
+    implementation "io.quarkus:quarkus-container-image-jib"
+    implementation "io.quarkus:quarkus-hibernate-validator"
+    implementation "io.quarkus:quarkus-micrometer-registry-prometheus"
+    implementation "io.quarkus:quarkus-opentelemetry"
+    implementation "io.quarkus:quarkus-resteasy-reactive-jsonb"
+    implementation "io.quarkus:quarkus-rest-client-reactive-jsonb"
+    implementation "io.quarkus:quarkus-smallrye-fault-tolerance"
+    implementation "io.quarkus:quarkus-smallrye-health"
+
+    // Lombok
+    annotationProcessor "org.projectlombok:lombok:1.18.26"
+    compileOnly "org.projectlombok:lombok:1.18.26"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+compileJava {
+    options.encoding = "UTF-8"
+    options.compilerArgs << "-parameters"
+}
+
+compileTestJava {
+    options.encoding = "UTF-8"
+}

@@ -4,3 +4,16 @@ kind: Kustomization
 resources:
   - deployment.yaml
   - service.yaml
+# TODO  - horizontal-pod-autoscaler.yaml
+
+configMapGenerator:
+  - name: app-config
+    literals:
+      - RUST_LOG=warn
+      - RUST_LOG_STYLE=never
+  - name: rust-flyway-config
+    literals:
+      - FLYWAY_SCHEMAS=public
+  - name: rust-flyway-migrations
+    files:
+      - resources/migrations/V0.1.0.0__create-data-table.sql
