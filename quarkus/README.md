@@ -1,6 +1,6 @@
 # quarkus
 
-## Building
+## Setup for docker-compose (Greenframe)
 
 Build the application:
 
@@ -12,6 +12,12 @@ Run the application:
 
 ```shell
 docker-compose up
+```
+
+View the resource consumption via Docker statistics:
+
+```shell
+docker stats quarkus-quarkus-1
 ```
 
 Run the load test via k6:
@@ -26,8 +32,22 @@ Run the measurement via Greenframe:
 greenframe analyze
 ```
 
-View the resource consumption via Docker statistics:
+## Setup for Tilt and Kubernetes
+
+Build and run the application:
 
 ```shell
-docker stats quarkus-quarkus-1
+tilt up
+```
+
+Run the load test via k6:
+
+```shell
+k6 run src/test/k6/script.js
+```
+
+View the resource consumption via Kubernetes statistics:
+
+```shell
+./run-kubectl-top.sh
 ```

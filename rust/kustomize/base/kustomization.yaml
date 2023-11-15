@@ -6,9 +6,9 @@ resources:
   - service.yaml
 
 configMapGenerator:
-  - name: quarkus-config
+  - name: rust-config
     literals: []
 
 secretGenerator:
-  - name: quarkus-secrets
+  - name: rust-secrets
     literals: []

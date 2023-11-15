@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rust-database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: rust-database
+  template:
+    metadata:
+      labels:
+        name: rust-database
+    spec:
+      containers:
+        - name: rust-database
+          image: postgres:15.4
+          imagePullPolicy: "IfNotPresent"
+          env:
+            - name: POSTGRES_DB
+              value: rust
+          envFrom:
+            - secretRef:
+                name: rust-database-secrets
+          ports:
+            - containerPort: 5432

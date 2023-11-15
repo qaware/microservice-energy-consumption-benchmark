@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rust
+spec:
+  selector:
+    matchLabels:
+      app: rust
+  strategy:
+    type: RollingUpdate
+  revisionHistoryLimit: 10
+  template:
+    metadata:
+      labels:
+        app: rust
+    spec:
+      containers:
+        - name: rust
+          image: rust
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: rust-config
+            - secretRef:
+                name: rust-secrets
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "500Mi"
+            limits:
+              memory: "500Mi"
+          startupProbe:
+            httpGet:
+              path: /health/started
+              port: 8080
+            periodSeconds: 1
+            failureThreshold: 30
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 8080
+            periodSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8080
+            periodSeconds: 2
+            failureThreshold: 5

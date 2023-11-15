@@ -16,7 +16,7 @@ services:
           cpus: '1.000'
           memory: 500M
         reservations:
-          cpus: '0.050'
+          cpus: '0.250'
           memory: 500M
     depends_on:
       - database
@@ -28,9 +28,9 @@ services:
   database:
     image: "postgres:15.4"
     environment:
-      - POSTGRES_DB=go
-      - POSTGRES_USER=go-db-user
-      - POSTGRES_PASSWORD=go-db-password
+      - POSTGRES_DB=quarkus
+      - POSTGRES_USER=quarkus-db-user
+      - POSTGRES_PASSWORD=quarkus-db-password
     ports:
       - "5432:5432"
     networks:
@@ -45,7 +45,7 @@ services:
       - FLYWAY_USER=go-db-user
       - FLYWAY_PASSWORD=go-db-password
     volumes:
-      - ./test/flyway:/flyway/sql/migrations
+      - ./kustomize/environment/local/resources/flyway:/flyway/sql/migrations
     depends_on:
       - database
     networks:
@@ -55,8 +55,8 @@ services:
     image: "wiremock/wiremock:3.3.1"
     command: --container-threads=128 --port=8888
     volumes:
-      - ./test/wiremock/files:/home/wiremock/__files
-      - ./test/wiremock/mappings:/home/wiremock/mappings
+      - ./kustomize/environment/local/wiremock/image/files:/home/wiremock/__files
+      - ./kustomize/environment/local/wiremock/image/mappings:/home/wiremock/mappings
     ports:
       - "8888:8888"
     networks:

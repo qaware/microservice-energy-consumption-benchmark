@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: go-database
+  template:
+    metadata:
+      labels:
+        name: go-database
+    spec:
+      containers:
+        - name: go-database
+          image: postgres:15.4
+          imagePullPolicy: "IfNotPresent"
+          env:
+            - name: POSTGRES_DB
+              value: go
+          envFrom:
+            - secretRef:
+                name: go-database-secrets
+          ports:
+            - containerPort: 5432

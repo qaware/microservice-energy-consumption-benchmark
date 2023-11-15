@@ -6,9 +6,9 @@ resources:
   - service.yaml
 
 configMapGenerator:
-  - name: quarkus-config
+  - name: go-config
     literals: []
 
 secretGenerator:
-  - name: quarkus-secrets
+  - name: go-secrets
     literals: []

@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS rust.items
     description TEXT      NOT NULL,
     status      TEXT      NOT NULL,
     color       TEXT      NOT NULL,
-    iteration   BIGINT    NOT NULL,
+    iteration  BIGINT    NOT NULL,
     updated_at  TIMESTAMP NOT NULL
 );
 

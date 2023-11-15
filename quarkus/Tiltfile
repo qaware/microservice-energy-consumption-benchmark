@@ -2,12 +2,10 @@ trigger_mode(TRIGGER_MODE_MANUAL)
 
 custom_build(
     'quarkus',
-    command='./gradlew --no-daemon --parallel -Djib.console=plain assemble',
+    command='./gradlew assemble',
+    command_bat='gradlew.bat assemble',
     tag='latest',
-    deps=[
-        'src/main',
-        'kustomize',
-        'gradle', 'build.gradle', 'gradle.properties', 'settings.gradle'])
+    deps=['src/main', 'gradle', 'build.gradle', 'gradle.properties', 'settings.gradle'])
 
 docker_build('quarkus-wiremock', 'kustomize/environment/local/wiremock/image')
 

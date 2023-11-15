@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-wiremock
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: go-wiremock
+  template:
+    metadata:
+      labels:
+        name: go-wiremock
+    spec:
+      containers:
+        - name: go-wiremock
+          image: go-wiremock
+          ports:
+            - containerPort: 8888
