@@ -1,0 +1,3 @@
+*
+!src/main/docker/home/nonroot/*
+!build/quarkus-app/*

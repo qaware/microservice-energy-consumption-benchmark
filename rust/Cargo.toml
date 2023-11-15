@@ -10,12 +10,13 @@ edition = "2021"
 # lto = true # enable link-time optimization
 
 [dependencies]
+actix-web = "4"
 serde = { version = "1.0", features = ["derive"] }
-rocket = { version = "0.5.0-rc.3", features = ["json"] }
-figment = { version = "0.10", features = ["toml", "env"] }
-sqlx = { version = "0.6", features = ["runtime-tokio-native-tls", "postgres", "migrate", "chrono"] }
+jsonwebtoken = "9"
+sqlx = { version = "0.6", features = ["runtime-tokio-native-tls", "postgres", "chrono"] }
 reqwest = { version = "0.11", features = ["json"] }
 chrono = { version = "0.4.24", features = ["serde"] }
-log = "0.4"
-ecs-logger = "1"
-futures = "0.3"
+env_logger = "0.10.0" #TODO
+# TODO log = "0.4"
+# TODO ecs-logger = "1"
+# TODO futures = "0.3"

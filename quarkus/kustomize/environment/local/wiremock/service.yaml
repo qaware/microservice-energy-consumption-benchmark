@@ -1,11 +1,35 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: cbs-icons-wiremock-server
+  name: quarkus-wiremock
 spec:
   type: ClusterIP
   ports:
     - protocol: TCP
       port: 8888
   selector:
-    name: cbs-icons-wiremock-server
+    name: quarkus-wiremock
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jwks
+spec:
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 8888
+  selector:
+    name: quarkus-wiremock
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: details-backend
+spec:
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 8888
+  selector:
+    name: quarkus-wiremock

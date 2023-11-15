@@ -1,10 +1,21 @@
+trigger_mode(TRIGGER_MODE_MANUAL)
+
 custom_build(
     'quarkus',
-    './gradlew quarkusBuild',
-    command_bat='gradlew quarkusBuild',
+    command='./gradlew --no-daemon --parallel -Djib.console=plain assemble',
     tag='latest',
-    deps=['src/main/java', 'src/main/resources', 'gradle', 'kustomize', 'build.gradle', 'gradle.properties', 'settings.gradle'])
+    deps=[
+        'src/main',
+        'kustomize',
+        'gradle', 'build.gradle', 'gradle.properties', 'settings.gradle'])
+
+docker_build('quarkus-wiremock', 'kustomize/environment/local/wiremock/image')
 
 k8s_yaml(kustomize('kustomize/environment/local'))
 
-k8s_resource(workload='quarkus', port_forwards=['8083:8083'])
+k8s_resource(
+    workload='quarkus',
+    port_forwards=[port_forward(local_port=8080, container_port=8080, name='http')])
+
+k8s_resource(workload='quarkus-database', port_forwards=5432)
+k8s_resource(workload='quarkus-wiremock', port_forwards=8888)

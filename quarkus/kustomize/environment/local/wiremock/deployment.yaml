@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cbs-icons-wiremock-server
+  name: quarkus-wiremock
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: cbs-icons-wiremock-server
+      name: quarkus-wiremock
   template:
     metadata:
       labels:
-        name: cbs-icons-wiremock-server
+        name: quarkus-wiremock
     spec:
       containers:
-        - name: cbs-icons-wiremock-server
-          image: cbs-icons-wiremock
+        - name: quarkus-wiremock
+          image: quarkus-wiremock
           ports:
             - containerPort: 8888

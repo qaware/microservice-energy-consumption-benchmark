@@ -1,34 +1,29 @@
-use database::Database;
+use actix_web::{App, HttpServer, web};
+use actix_web::web::Data;
 
-mod delay;
-mod health;
-mod data;
-mod database;
-mod resources;
+use crate::shared::database::Database;
 
-#[rocket::main]
-async fn main() -> Result<(), rocket::Error> {
-    ecs_logger::init();
+mod sample;
+mod shared;
 
-    // TODO: improve error handling
-    let db = Database::new().await.unwrap();
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    // TODO
+    // std::env::set_var("RUST_LOG", "debug");
+    // env_logger::init();
 
-    let _ = rocket::build()
-        .manage(db)
-        .mount("/", rocket::routes![
-            resources::openapi])
-        .mount("/health", rocket::routes![
-            health::started,
-            health::live,
-            health::ready])
-        .mount("/api/delay", rocket::routes![
-            delay::delay])
-        .mount("/api/data", rocket::routes![
-            data::get_data_for_id,
-            data::put_data_for_id])
-        .launch()
-        .await?;
+    let db = Database::new().await.expect("database setup should work");
 
-    Ok(())
+    let server = HttpServer::new(move || {
+        App::new()
+            .configure(shared::health::config)
+            // TODO: metrics
+            .service(
+                web::scope("/api/sample")
+                    .app_data(Data::new(db.clone()))
+                    .configure(sample::resource::config),
+            )
+    });
+
+    server.bind("0.0.0.0:8080")?.run().await
 }
-

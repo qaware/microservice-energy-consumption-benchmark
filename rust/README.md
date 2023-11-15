@@ -1,6 +1,27 @@
+# quarkus
 
+## Building
 
-OTEL endpint at http://cbs-otel-collector:4317
-Jaeger UI http://localhost:16686/                                                                                                                                                                                                         |                                                                                                                                                                                                                                                                                              |
+Build and run the application:
 
+```shell
+docker-compose up --build
+```
 
+Run the load test via k6:
+
+```shell
+k6 run test/k6/script.js
+```
+
+Run the measurement via Greenframe:
+
+```shell
+greenframe analyze
+```
+
+View the resource consumption via Docker statistics:
+
+```shell
+docker stats rust-rust-1
+```

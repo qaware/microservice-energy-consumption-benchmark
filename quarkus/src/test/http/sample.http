@@ -1,0 +1,23 @@
+### get overview
+
+GET {{host}}/api/sample/items
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### get overview from offset
+
+GET {{host}}/api/sample/items?from=item-id-1100
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### get detail
+
+GET {{host}}/api/sample/items/item-id-1100
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
+GET http://localhost:8080/api/sample/items
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InNhbXBsZS1pZCJ9.eyJzdWIiOiJ1c2VyLTA5IiwibmFtZSI6IkpvaG4gRG9lIiwiaXNzIjoic2FtcGxlLWlzc3VlciIsImF1ZCI6InNhbXBsZS1hdWRpZW5jZSIsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjoyMzMxMDI1NTY4LCJncm91cHMiOlsidXNlciJdfQ.eQIR8QhEt5fsmWq1pG1V2Xtnnhy1pKbkjpCLfumYeXaJNOsieKhi-bwXuJzxiQdDKokj8a3fHZHzWZ_jxPy5Rd7KbSVz2SiAZriIehvsOrwv-0i5wYlpzi-RJWTmnZIR_TjSoN8zPhRK1v61lU8i1T74S1RWemCHVjqGsAru7QhUdM_xrmznpDzGCUJtkhI3sEWhrNicordUswFYAWuUCkpKzIWy8nTLVB8ewQfnA_Skl5ElFR7pEZwOzUkgy4EGjerDxCV44zZuTbplHQ3WlUsaXpxdGXwlGe41IjxwBSwci6xjbQ9LCm9aKuR_XEmvjUn6FBxQimmOtFNYdQrk3g
+Accept: application/json

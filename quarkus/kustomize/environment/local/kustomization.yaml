@@ -1,5 +1,28 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+namespace: quarkus
+
+generatorOptions:
+  disableNameSuffixHash: true
+
 resources:
   - ../../base
+  - database
+  - wiremock
+
+configMapGenerator:
+  - name: quarkus-config
+    behavior: merge
+    literals:
+      - SAMPLE_JWKS_URL=http://jwks:8888
+      - MP_JWT_VERIFY_ISSUER=sample-issuer
+      - MP_JWT_VERIFY_AUDIENCES=sample-audience
+      - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://quarkus-database:5432/quarkus
+
+secretGenerator:
+  - name: quarkus-secrets
+    behavior: merge
+    literals:
+      - QUARKUS_DATASOURCE_USERNAME=quarkus-db-user
+      - QUARKUS_DATASOURCE_PASSWORD=quarkus-db-password

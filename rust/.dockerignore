@@ -1,4 +1,4 @@
-.idea/
-http/
-kustomize/
-target/
+*
+!Cargo.lock
+!Cargo.toml
+!src

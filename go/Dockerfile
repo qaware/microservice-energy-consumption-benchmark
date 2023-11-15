@@ -1,6 +1,4 @@
-# TODO check https://chemidy.medium.com/create-the-smallest-and-secured-golang-docker-image-based-on-scratch-4752223b7324
-
-FROM golang:1.20 AS build
+FROM golang:1.21 AS build
 
 WORKDIR /go/src/app
 
@@ -9,10 +7,19 @@ RUN go mod download
 
 COPY . /go/src/app/
 #RUN CGO_ENABLED=0 go build -ldflags '-w -s' -o /app main.go
-RUN CGO_ENABLED=0 go build -o /app main.go
+RUN CGO_ENABLED=0 go build -o /app ./cmd/app/
 
-FROM gcr.io/distroless/base AS runtime
+# The final container image is based on a ready-made "distro-less" image.
+FROM gcr.io/distroless/static-debian12 AS runtime
 
-WORKDIR app
+# Provide default values for language and locale.
+ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
+
+# Copy the application.
 COPY --from=build /app /usr/local/bin/
+
+# Use an unprivileged user for executing processes in the container.
+USER nonroot
+WORKDIR /home/nonroot
+
 ENTRYPOINT ["/usr/local/bin/app"]

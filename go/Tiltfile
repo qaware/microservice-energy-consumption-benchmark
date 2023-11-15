@@ -1,5 +1,0 @@
-docker_build('go', '.', only = ['app', 'kustomize', 'go.mod', 'go.sum', 'main.go'])
-
-k8s_yaml(kustomize('kustomize/environment/local'))
-
-k8s_resource(workload='go', port_forwards=['8082:8082'])

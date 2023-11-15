@@ -1,7 +1,0 @@
-{
-  "access_token": "some-external-machine-token",
-  "client_id": "external-machine-token",
-  "realm": "machine2machine",
-  "token_type": "Bearer",
-  "expires_in": 300
-}
