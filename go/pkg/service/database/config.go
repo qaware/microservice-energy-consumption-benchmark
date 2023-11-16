@@ -19,6 +19,7 @@ func init() {
 	if err != nil {
 		logger.FatalOnError(err, "Failed to open connection to database")
 	}
+	Db.SetMaxOpenConns(50)
 }
 
 func InTransaction(c context.Context, action func() error) error {

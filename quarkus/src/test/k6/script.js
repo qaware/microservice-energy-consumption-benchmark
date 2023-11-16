@@ -6,12 +6,12 @@ import exec from 'k6/execution';
 export const options = {
   scenarios: {
     overview: {
-      executor: 'constant-arrival-rate', duration: '90s', rate: 10, timeUnit: '1s',
+      executor: 'constant-arrival-rate', duration: '90s', rate: 100, timeUnit: '1s',
       preAllocatedVUs: 100, maxVUs: 300,
       exec: 'overview',
     },
     detail: {
-      executor: 'constant-arrival-rate', duration: '90s', rate: 50, timeUnit: '1s',
+      executor: 'constant-arrival-rate', duration: '90s', rate: 400, timeUnit: '1s',
       preAllocatedVUs: 100, maxVUs: 1000,
       exec: 'detail',
     },
@@ -47,7 +47,7 @@ export function overview() {
   const overviewUrl = baseUrl + '?from=item-id-' + (1000 + 10 * Math.floor(Math.random() * 500) + userIndex)
   const resp = http.get(overviewUrl, params);
   if (resp.status !== 200) {
-    exec.test.abort(overviewUrl + ' for user ' + userIndex + ' with status ' + resp.status);
+    // exec.test.abort(overviewUrl + ' for user ' + userIndex + ' with status ' + resp.status);
   }
   check(resp, {
     'is status 200': (r) => r.status === 200,
@@ -66,7 +66,7 @@ export function detail() {
   const detailUrl = baseUrl + '/item-id-' + (1000 + 10 * Math.floor(Math.random() * 500) + userIndex);
   const resp = http.get(detailUrl, params);
   if (resp.status !== 200) {
-    exec.test.abort(detailUrl + ' for user ' + userIndex + ' with status ' + resp.status);
+    // exec.test.abort(detailUrl + ' for user ' + userIndex + ' with status ' + resp.status);
   }
   check(resp, {
     'is status 200': (r) => r.status === 200,

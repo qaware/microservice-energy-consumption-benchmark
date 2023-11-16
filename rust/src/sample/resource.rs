@@ -3,7 +3,7 @@ use chrono::{TimeZone, Utc};
 use serde::Deserialize;
 
 use crate::sample::api::{DetailItem, ErrorResponse, OverviewItem, OverviewItemList, Preview, Step};
-use crate::sample::steps::get_steps;
+use crate::sample::steps::{get_steps, StepsClient};
 use crate::sample::storage::{get_stored_item, get_stored_items, get_stored_previews};
 use crate::shared::auth::auth;
 use crate::shared::database::Database;
@@ -57,6 +57,7 @@ pub async fn get_overview(
 pub async fn get_detail(
     path: web::Path<String>,
     db_data: web::Data<Database>,
+    steps_client: web::Data<StepsClient>,
     req: HttpRequest,
 ) -> impl Responder {
     let optional_current_user = auth(req);
@@ -91,6 +92,7 @@ pub async fn get_detail(
     let previews = stored_previews.unwrap();
 
     let status_steps_result = get_steps(
+        steps_client.as_ref(),
         current_user.raw_token(),
         item_id,
     ).await;

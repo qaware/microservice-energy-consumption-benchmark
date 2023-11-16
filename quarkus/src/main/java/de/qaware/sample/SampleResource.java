@@ -1,5 +1,6 @@
 package de.qaware.sample;
 
+import io.smallrye.common.annotation.RunOnVirtualThread;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.DefaultValue;
@@ -30,6 +31,7 @@ public class SampleResource {
     @GET
     @Path("items")
     @Produces(MediaType.APPLICATION_JSON)
+    @RunOnVirtualThread
     public Response getOverview(
         @QueryParam("from") String from,
         @QueryParam("limit") @DefaultValue("10") int limit
@@ -40,6 +42,7 @@ public class SampleResource {
     @GET
     @Path("items/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @RunOnVirtualThread
     public Response getDetails(@PathParam("id") String id) {
         Optional<DetailItem> optionalDetailItem = sampleLogic.getDetailItem(userId.getValue(), id);
 

@@ -13,6 +13,7 @@ async fn main() -> std::io::Result<()> {
     // env_logger::init();
 
     let db = Database::new().await.expect("database setup should work");
+    let steps_client = sample::steps::build_steps_client().expect("steps client should be available");
 
     let server = HttpServer::new(move || {
         App::new()
@@ -21,6 +22,7 @@ async fn main() -> std::io::Result<()> {
             .service(
                 web::scope("/api/sample")
                     .app_data(Data::new(db.clone()))
+                    .app_data(Data::new(steps_client.clone()))
                     .configure(sample::resource::config),
             )
     });
