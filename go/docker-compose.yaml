@@ -3,11 +3,11 @@ services:
     image: "go:latest"
     build: .
     environment:
-      - AUTH_JWT_JWKS_URL=http://wiremock:8888/.well-known/jwks.json
+      - AUTH_JWT_JWKS_URL=http://go-wiremock:8888/.well-known/jwks.json
       - AUTH_JWT_EXPECTED_ISSUER=sample-issuer
       - AUTH_JWT_EXPECTED_AUDIENCE=sample-audience
-      - DB_CONNECTION=postgresql://go-db-user:go-db-password@database:5432/go
-      - STEPS_URL=http://wiremock:8888
+      - DB_CONNECTION=postgresql://go-db-user:go-db-password@go-database:5432/go
+      - STEPS_URL=http://go-wiremock:8888
     ports:
       - "8080:8080"
     deploy:
@@ -19,39 +19,39 @@ services:
           cpus: '0.250'
           memory: 500M
     depends_on:
-      - database
-      - flyway
-      - wiremock
+      - go-database
+      - go-flyway
+      - go-wiremock
     networks:
-      - docker-net
+      - go-docker-net
 
-  database:
+  go-database:
     image: "postgres:15.4"
     environment:
-      - POSTGRES_DB=quarkus
-      - POSTGRES_USER=quarkus-db-user
-      - POSTGRES_PASSWORD=quarkus-db-password
+      - POSTGRES_DB=go
+      - POSTGRES_USER=go-db-user
+      - POSTGRES_PASSWORD=go-db-password
     ports:
       - "5432:5432"
     networks:
-      - docker-net
+      - go-docker-net
 
-  flyway:
+  go-flyway:
     image: flyway/flyway:10
     command: migrate
     environment:
-      - FLYWAY_URL=jdbc:postgresql://database:5432/go
+      - FLYWAY_URL=jdbc:postgresql://go-database:5432/go
       - FLYWAY_SCHEMAS=go
       - FLYWAY_USER=go-db-user
       - FLYWAY_PASSWORD=go-db-password
     volumes:
       - ./kustomize/environment/local/resources/flyway:/flyway/sql/migrations
     depends_on:
-      - database
+      - go-database
     networks:
-      - docker-net
+      - go-docker-net
 
-  wiremock:
+  go-wiremock:
     image: "wiremock/wiremock:3.3.1"
     command: --container-threads=128 --port=8888
     volumes:
@@ -60,8 +60,8 @@ services:
     ports:
       - "8888:8888"
     networks:
-      - docker-net
+      - go-docker-net
 
 networks:
-  docker-net:
+  go-docker-net:
     driver: bridge

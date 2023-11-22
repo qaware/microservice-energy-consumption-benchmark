@@ -2,13 +2,13 @@ services:
   quarkus:
     image: "quarkus:latest"
     environment:
-      - SAMPLE_JWKS_URL=http://wiremock:8888
+      - SAMPLE_JWKS_URL=http://quarkus-wiremock:8888
       - MP_JWT_VERIFY_ISSUER=sample-issuer
       - MP_JWT_VERIFY_AUDIENCES=sample-audience
-      - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://database:5432/quarkus
+      - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://quarkus-database:5432/quarkus
       - QUARKUS_DATASOURCE_USERNAME=quarkus-db-user
       - QUARKUS_DATASOURCE_PASSWORD=quarkus-db-password
-      - QUARKUS_REST_CLIENT_STEPS_URL=http://wiremock:8888
+      - QUARKUS_REST_CLIENT_STEPS_URL=http://quarkus-wiremock:8888
     ports:
       - "8080:8080"
     deploy:
@@ -20,13 +20,13 @@ services:
           cpus: '0.250'
           memory: 500M
     depends_on:
-      - database
-      - flyway
-      - wiremock
+      - quarkus-database
+      - quarkus-flyway
+      - quarkus-wiremock
     networks:
-      - docker-net
+      - quarkus-docker-net
 
-  database:
+  quarkus-database:
     image: "postgres:15.4"
     environment:
       - POSTGRES_DB=quarkus
@@ -35,24 +35,24 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - docker-net
+      - quarkus-docker-net
 
-  flyway:
+  quarkus-flyway:
     image: flyway/flyway:10
     command: migrate
     environment:
-      - FLYWAY_URL=jdbc:postgresql://database:5432/quarkus
+      - FLYWAY_URL=jdbc:postgresql://quarkus-database:5432/quarkus
       - FLYWAY_SCHEMAS=quarkus
       - FLYWAY_USER=quarkus-db-user
       - FLYWAY_PASSWORD=quarkus-db-password
     volumes:
       - ./kustomize/environment/local/resources/flyway:/flyway/sql/migrations
     depends_on:
-      - database
+      - quarkus-database
     networks:
-      - docker-net
+      - quarkus-docker-net
 
-  wiremock:
+  quarkus-wiremock:
     image: "wiremock/wiremock:3.3.1"
     command: --container-threads=128 --port=8888
     volumes:
@@ -61,8 +61,8 @@ services:
     ports:
       - "8888:8888"
     networks:
-      - docker-net
+      - quarkus-docker-net
 
 networks:
-  docker-net:
+  quarkus-docker-net:
     driver: bridge

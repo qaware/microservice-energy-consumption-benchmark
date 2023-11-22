@@ -27,5 +27,7 @@ async fn main() -> std::io::Result<()> {
             )
     });
 
+    println!("Starting the service");  // TODO: use JSON logging
+
     server.bind("0.0.0.0:8080")?.run().await
 }

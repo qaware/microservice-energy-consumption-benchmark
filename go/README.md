@@ -2,10 +2,22 @@
 
 ## Setup for docker-compose (Greenframe)
 
-Build and run the application:
+Build the application:
 
 ```shell
-docker-compose up --build
+docker-compose build go
+```
+
+Run the dependencies:
+
+```shell
+docker-compose up go-database go-flyway go-wiremock
+```
+
+Run the application:
+
+```shell
+docker-compose up go
 ```
 
 View the resource consumption via Docker statistics:
