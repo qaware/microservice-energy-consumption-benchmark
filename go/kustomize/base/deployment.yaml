@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: go
-          image: go
+          image: 204306537988.dkr.ecr.eu-north-1.amazonaws.com/go:latest
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:

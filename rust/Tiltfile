@@ -1,7 +1,9 @@
 trigger_mode(TRIGGER_MODE_MANUAL)
 
-docker_build('rust', '.')
-docker_build('rust-wiremock', 'kustomize/environment/local/wiremock/image')
+docker_build('204306537988.dkr.ecr.eu-north-1.amazonaws.com/rust:latest', '.')
+docker_build('204306537988.dkr.ecr.eu-north-1.amazonaws.com/rust-wiremock:latest', 'kustomize/environment/local/wiremock/image')
+
+allow_k8s_contexts('FWE@green-eks-k8s.eu-north-1.eksctl.io')
 
 k8s_yaml(kustomize('kustomize/environment/local'))
 
