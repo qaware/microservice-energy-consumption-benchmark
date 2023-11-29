@@ -68,4 +68,5 @@ services:
 
 networks:
   rust-docker-net:
-    driver: bridge
+#    default driver is bridge, Green Metrics Tool cannot handle compose file with driver set
+#    driver: bridge
