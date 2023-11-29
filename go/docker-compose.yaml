@@ -1,30 +1,4 @@
 services:
-  go:
-    image: "go:latest"
-    build: .
-    environment:
-      - AUTH_JWT_JWKS_URL=http://go-wiremock:8888/.well-known/jwks.json
-      - AUTH_JWT_EXPECTED_ISSUER=sample-issuer
-      - AUTH_JWT_EXPECTED_AUDIENCE=sample-audience
-      - DB_CONNECTION=postgresql://go-db-user:go-db-password@go-database:5432/go
-      - STEPS_URL=http://go-wiremock:8888
-    ports:
-      - "8080:8080"
-    deploy:
-      resources:
-        limits:
-          cpus: '1.000'
-          memory: 500M
-        reservations:
-          cpus: '0.250'
-          memory: 500M
-    depends_on:
-      - go-database
-      - go-flyway
-      - go-wiremock
-    networks:
-      - go-docker-net
-
   go-database:
     image: "postgres:15.4"
     environment:
@@ -59,6 +33,32 @@ services:
       - ./kustomize/environment/local/wiremock/image/mappings:/home/wiremock/mappings
     ports:
       - "8888:8888"
+    networks:
+      - go-docker-net
+
+  go:
+    image: "go:latest"
+    build: .
+    environment:
+      - AUTH_JWT_JWKS_URL=http://go-wiremock:8888/.well-known/jwks.json
+      - AUTH_JWT_EXPECTED_ISSUER=sample-issuer
+      - AUTH_JWT_EXPECTED_AUDIENCE=sample-audience
+      - DB_CONNECTION=postgresql://go-db-user:go-db-password@go-database:5432/go
+      - STEPS_URL=http://go-wiremock:8888
+    ports:
+      - "8080:8080"
+    deploy:
+      resources:
+        limits:
+          cpus: '1.000'
+          memory: 500M
+        reservations:
+          cpus: '0.250'
+          memory: 500M
+    depends_on:
+      - go-database
+      - go-flyway
+      - go-wiremock
     networks:
       - go-docker-net
 
