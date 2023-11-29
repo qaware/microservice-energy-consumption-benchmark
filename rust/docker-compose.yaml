@@ -1,34 +1,4 @@
 services:
-  rust:
-    image: "rust:latest"
-    build: .
-    environment:
-      - AUTH_JWT_JWKS_URL=http://rust-wiremock:8888/.well-known/jwks.json
-      - AUTH_JWT_EXPECTED_ISSUER=sample-issuer
-      - AUTH_JWT_EXPECTED_AUDIENCE=sample-audience
-      - DB_HOST=rust-database
-      - DB_PORT=5432
-      - DB_NAME=rust
-      - DB_USER=rust-db-user
-      - DB_PASSWORD=rust-db-password
-      - STEPS_URL=http://rust-wiremock:8888
-    ports:
-      - "8080:8080"
-    deploy:
-      resources:
-        limits:
-          cpus: '1.000'
-          memory: 500M
-        reservations:
-          cpus: '0.250'
-          memory: 500M
-    depends_on:
-      - rust-database
-      - rust-flyway
-      - rust-wiremock
-    networks:
-      - rust-docker-net
-
   rust-database:
     image: "postgres:15.4"
     environment:
@@ -63,6 +33,36 @@ services:
       - ./kustomize/environment/local/wiremock/image/mappings:/home/wiremock/mappings
     ports:
       - "8888:8888"
+    networks:
+      - rust-docker-net
+
+  rust:
+    image: "rust:latest"
+    build: .
+    environment:
+      - AUTH_JWT_JWKS_URL=http://rust-wiremock:8888/.well-known/jwks.json
+      - AUTH_JWT_EXPECTED_ISSUER=sample-issuer
+      - AUTH_JWT_EXPECTED_AUDIENCE=sample-audience
+      - DB_HOST=rust-database
+      - DB_PORT=5432
+      - DB_NAME=rust
+      - DB_USER=rust-db-user
+      - DB_PASSWORD=rust-db-password
+      - STEPS_URL=http://rust-wiremock:8888
+    ports:
+      - "8080:8080"
+    deploy:
+      resources:
+        limits:
+          cpus: '1.000'
+          memory: 500M
+        reservations:
+          cpus: '0.250'
+          memory: 500M
+    depends_on:
+      - rust-database
+      - rust-flyway
+      - rust-wiremock
     networks:
       - rust-docker-net
 
