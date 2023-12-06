@@ -1,0 +1,19 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPathTemplate": "/api/items/{itemId}/steps"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "steps.json",
+    "transformers": ["response-template"],
+    "delayDistribution": {
+      "type": "uniform",
+      "lower": 15,
+      "upper": 50
+    }
+  }
+}

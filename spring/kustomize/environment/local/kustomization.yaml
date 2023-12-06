@@ -1,0 +1,48 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: spring
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+resources:
+  - ../../base
+  - database
+  - wiremock
+  - namespace.yaml
+
+patchesStrategicMerge:
+  - init-container-patch.yaml
+
+configMapGenerator:
+  - name: spring-config
+    behavior: merge
+    literals:
+      - SAMPLE_JWKS_URL=http://jwks:8888
+      - MP_JWT_VERIFY_ISSUER=sample-issuer
+      - MP_JWT_VERIFY_AUDIENCES=sample-audience
+      - spring_DATASOURCE_JDBC_URL=jdbc:postgresql://spring-database:5432/spring
+      - spring_REST_CLIENT_STEPS_URL=http://steps:8888
+
+  - name: spring-flyway-config
+    literals:
+      - FLYWAY_URL=jdbc:postgresql://spring-database:5432/spring
+      - FLYWAY_SCHEMAS=spring
+
+  - name: spring-flyway-migrations
+    files:
+      - resources/flyway/V1.00.000__Init.sql
+      - resources/flyway/V1.00.001__Data.sql
+
+secretGenerator:
+  - name: spring-secrets
+    behavior: merge
+    literals:
+      - spring_DATASOURCE_USERNAME=spring-db-user
+      - spring_DATASOURCE_PASSWORD=spring-db-password
+
+  - name: spring-flyway-secrets
+    literals:
+      - FLYWAY_USER=spring-db-user
+      - FLYWAY_PASSWORD=spring-db-password

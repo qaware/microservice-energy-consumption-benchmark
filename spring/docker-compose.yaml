@@ -1,0 +1,64 @@
+services:
+  spring:
+    image: "spring:latest"
+    environment:
+      - SPRING_DATASOURCE_JDBC_URL=jdbc:postgresql://spring-database:5432/spring
+      - SPRING_DATASOURCE_USERNAME=spring-db-user
+      - SPRING_DATASOURCE_PASSWORD=spring-db-password
+    ports:
+      - "8080:8080"
+    deploy:
+      resources:
+        limits:
+          cpus: '1.000'
+          memory: 500M
+        reservations:
+          cpus: '0.250'
+          memory: 500M
+    depends_on:
+      - spring-database
+      - spring-flyway
+      - spring-wiremock
+    networks:
+      - spring-docker-net
+
+  spring-database:
+    image: "postgres:15.4"
+    environment:
+      - POSTGRES_DB=spring
+      - POSTGRES_USER=spring-db-user
+      - POSTGRES_PASSWORD=spring-db-password
+    ports:
+      - "5432:5432"
+    networks:
+      - spring-docker-net
+
+  spring-flyway:
+    image: flyway/flyway:10
+    command: migrate
+    environment:
+      - FLYWAY_URL=jdbc:postgresql://spring-database:5432/spring
+      - FLYWAY_SCHEMAS=spring
+      - FLYWAY_USER=spring-db-user
+      - FLYWAY_PASSWORD=spring-db-password
+    volumes:
+      - ./kustomize/environment/local/resources/flyway:/flyway/sql/migrations
+    depends_on:
+      - spring-database
+    networks:
+      - spring-docker-net
+
+  spring-wiremock:
+    image: "wiremock/wiremock:3.3.1"
+    command: --container-threads=128 --port=8888
+    volumes:
+      - ./kustomize/environment/local/wiremock/image/files:/home/wiremock/__files
+      - ./kustomize/environment/local/wiremock/image/mappings:/home/wiremock/mappings
+    ports:
+      - "8888:8888"
+    networks:
+      - spring-docker-net
+
+networks:
+  spring-docker-net:
+    driver: bridge
