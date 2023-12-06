@@ -2,9 +2,13 @@ services:
   spring:
     image: "spring:latest"
     environment:
+      - SAMPLE_JWKS_URL=http://spring-wiremock:8888
+      - MP_JWT_VERIFY_ISSUER=sample-issuer
+      - MP_JWT_VERIFY_AUDIENCES=sample-audience
       - SPRING_DATASOURCE_JDBC_URL=jdbc:postgresql://spring-database:5432/spring
       - SPRING_DATASOURCE_USERNAME=spring-db-user
       - SPRING_DATASOURCE_PASSWORD=spring-db-password
+      - SPRING_REST_CLIENT_STEPS_URL=http://spring-wiremock:8888
     ports:
       - "8080:8080"
     deploy:
