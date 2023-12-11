@@ -1,3 +1,11 @@
 *
-!src/main/docker/home/nonroot/*
 !build/quarkus-app/*
+# For a multi stage build we need
+!src/
+!gradlew
+!gradle/
+!build.gradle
+!settings.gradle
+!gradle.properties
+!lombok.config
+

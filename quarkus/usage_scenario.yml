@@ -1,0 +1,25 @@
+---
+name: Quarkus K6 Load Test Scenario
+author: Andreas Weber <andreas.weber@qaware.de>
+description: Simple Webservice accessing DB and (mocked) webservice. Built in quarkus.
+compose-file: !include docker-compose.yaml
+
+services:
+  quarkus-k6:
+    image: "grafana/k6:0.47.0"
+    entrypoint: "/bin/sh"
+    networks:
+      - quarkus-docker-net
+
+flow:
+  - name: Run Load Tests
+    container: quarkus-k6
+    commands:
+      - type: console
+        command: k6 run /tmp/repo/src/test/k6/script.js
+        note: Run k6 load test
+        read-notes-stdout: true
+        log-stdout: true
+        log-stderr: true
+
+
