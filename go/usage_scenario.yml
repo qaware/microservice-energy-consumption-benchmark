@@ -5,7 +5,7 @@ description: Simple Webservice accessing DB and (mocked) webservice. Built in go
 compose-file: !include docker-compose.yaml
 
 services:
-  gi-database:
+  go-database:
     # Ensure db is running before flyway is started
     setup-commands:
       - sleep 10
