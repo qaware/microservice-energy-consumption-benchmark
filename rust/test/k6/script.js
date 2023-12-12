@@ -6,12 +6,12 @@ import exec from 'k6/execution';
 export const options = {
   scenarios: {
     overview: {
-      executor: 'constant-arrival-rate', duration: '90s', rate: 50, timeUnit: '1s',
+      executor: 'constant-arrival-rate', duration: '90s', rate: 10, timeUnit: '1s',
       preAllocatedVUs: 100, maxVUs: 300,
       exec: 'overview',
     },
     detail: {
-      executor: 'constant-arrival-rate', duration: '90s', rate: 200, timeUnit: '1s',
+      executor: 'constant-arrival-rate', duration: '90s', rate: 40, timeUnit: '1s',
       preAllocatedVUs: 100, maxVUs: 1000,
       exec: 'detail',
     },
