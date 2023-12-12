@@ -5,6 +5,10 @@ description: Simple Webservice accessing DB and (mocked) webservice. Built in qu
 compose-file: !include docker-compose.yaml
 
 services:
+  quarkus-database:
+    # Ensure db is running before flyway is started
+    setup-commands:
+      - sleep 10
   quarkus-flyway:
     entrypoint: "/bin/sh"
     setup-commands:
