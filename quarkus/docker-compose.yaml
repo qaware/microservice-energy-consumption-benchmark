@@ -12,7 +12,7 @@ services:
 
   quarkus-flyway:
     image: flyway/flyway:10
-    command: migrate
+#    command: migrate
     environment:
       - FLYWAY_URL=jdbc:postgresql://quarkus-database:5432/quarkus
       - FLYWAY_SCHEMAS=quarkus

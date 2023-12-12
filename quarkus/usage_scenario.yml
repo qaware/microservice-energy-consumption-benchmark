@@ -5,6 +5,14 @@ description: Simple Webservice accessing DB and (mocked) webservice. Built in qu
 compose-file: !include docker-compose.yaml
 
 services:
+  quarkus-flyway:
+    entrypoint: "/bin/sh"
+    setup-commands:
+      - flyway migrate
+  quarkus:
+    # This command is needed, cause the container needs a boot time to work
+    setup-commands:
+      - sleep 10
   quarkus-k6:
     image: "grafana/k6:0.47.0"
     entrypoint: "/bin/sh"
