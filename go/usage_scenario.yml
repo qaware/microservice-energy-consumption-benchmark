@@ -5,8 +5,12 @@ description: Simple Webservice accessing DB and (mocked) webservice. Built in go
 compose-file: !include docker-compose.yaml
 
 services:
+  go-flyway:
+    entrypoint: "/bin/sh"
+    setup-commands:
+      - flyway migrate
   go-wiremock:
-    # This command is needed, cause the container needs a bootup time to work
+    # This command is needed, cause the container needs a boot time to work
     setup-commands:
       - sleep 10
   go-k6:

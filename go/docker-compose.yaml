@@ -12,7 +12,7 @@ services:
 
   go-flyway:
     image: flyway/flyway:10
-    command: migrate
+#    command: migrate
     environment:
       - FLYWAY_URL=jdbc:postgresql://go-database:5432/go
       - FLYWAY_SCHEMAS=go

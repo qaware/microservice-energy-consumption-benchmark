@@ -12,7 +12,7 @@ services:
 
   rust-flyway:
     image: flyway/flyway:10
-    command: migrate
+#    command: migrate
     environment:
       - FLYWAY_URL=jdbc:postgresql://rust-database:5432/rust
       - FLYWAY_SCHEMAS=rust

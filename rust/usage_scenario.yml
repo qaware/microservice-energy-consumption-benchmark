@@ -5,6 +5,10 @@ description: Simple Webservice accessing DB and (mocked) webservice. Built in ru
 compose-file: !include docker-compose.yaml
 
 services:
+  rust-flyway:
+    entrypoint: "/bin/sh"
+    setup-commands:
+      - flyway migrate
   rust-k6:
     image: "grafana/k6:0.47.0"
     entrypoint: "/bin/sh"
