@@ -1,5 +1,5 @@
 services:
-  spring:
+  app:
     image: "spring:latest"
     environment:
       - SAMPLE_JWKS_URL=http://spring-wiremock:8888
@@ -20,13 +20,13 @@ services:
           cpus: '0.250'
           memory: 500M
     depends_on:
-      - spring-database
-      - spring-flyway
-      - spring-wiremock
+      - database
+      - database-setup
+      - service-mock
     networks:
-      - spring-docker-net
+      - docker-net
 
-  spring-database:
+  database:
     image: "postgres:15.4"
     environment:
       - POSTGRES_DB=spring
@@ -35,9 +35,9 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - spring-docker-net
+      - docker-net
 
-  spring-flyway:
+  database-setup:
     image: flyway/flyway:10
     command: migrate
     environment:
@@ -48,11 +48,11 @@ services:
     volumes:
       - ./kustomize/environment/local/resources/flyway:/flyway/sql/migrations
     depends_on:
-      - spring-database
+      - database
     networks:
-      - spring-docker-net
+      - docker-net
 
-  spring-wiremock:
+  service-mock:
     image: "wiremock/wiremock:3.3.1"
     command: --container-threads=128 --port=8888
     volumes:
@@ -61,8 +61,8 @@ services:
     ports:
       - "8888:8888"
     networks:
-      - spring-docker-net
+      - docker-net
 
 networks:
-  spring-docker-net:
+  docker-net:
     driver: bridge
