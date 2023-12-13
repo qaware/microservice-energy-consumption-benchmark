@@ -114,6 +114,11 @@
                         <image>
                             <name>spring:latest</name>
                             <build>
+                                <buildx>
+                                    <platforms>
+                                        <platform>linux/amd64</platform>
+                                    </platforms>
+                                </buildx>
                                 <dockerFileDir>${project.basedir}/src/main/docker</dockerFileDir>
                                 <assembly>
                                     <descriptor>${project.basedir}/src/main/docker/assembly.xml</descriptor>
