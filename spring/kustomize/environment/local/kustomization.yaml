@@ -22,8 +22,8 @@ configMapGenerator:
       - SAMPLE_JWKS_URL=http://jwks:8888
       - MP_JWT_VERIFY_ISSUER=sample-issuer
       - MP_JWT_VERIFY_AUDIENCES=sample-audience
-      - spring_DATASOURCE_JDBC_URL=jdbc:postgresql://spring-database:5432/spring
-      - spring_REST_CLIENT_STEPS_URL=http://steps:8888
+      - SPRING_DATASOURCE_JDBC_URL=jdbc:postgresql://spring-database:5432/spring
+      - SPRING_REST_CLIENT_STEPS_URL=http://steps:8888
 
   - name: spring-flyway-config
     literals:
@@ -39,8 +39,8 @@ secretGenerator:
   - name: spring-secrets
     behavior: merge
     literals:
-      - spring_DATASOURCE_USERNAME=spring-db-user
-      - spring_DATASOURCE_PASSWORD=spring-db-password
+      - SPRING_DATASOURCE_USERNAME=spring-db-user
+      - SPRING_DATASOURCE_PASSWORD=spring-db-password
 
   - name: spring-flyway-secrets
     literals:
