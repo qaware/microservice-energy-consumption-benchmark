@@ -13,17 +13,24 @@ server:
 
 management:
   endpoints:
-    jmx:
+    enabled-by-default: false
+    web:
       exposure:
         include:
           - health
+          - metrics
           - info
-          - started
-
+      base-path: /management
   endpoint:
     health:
+      enabled: true
       probes:
         add-additional-paths: true
+        enabled: true
+    metrics:
+      enabled: true
+    info:
+      enabled: true
 
 logging:
   level:
