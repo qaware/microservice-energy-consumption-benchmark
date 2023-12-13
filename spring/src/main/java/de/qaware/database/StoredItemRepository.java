@@ -11,5 +11,5 @@ public interface StoredItemRepository extends JpaRepository<StoredItem, String> 
 
     List<StoredItem> findByUserIdAndIdGreaterThanEqualOrderByUpdatedAt(String userId, String fromId, Pageable pageable);
 
-    Optional<StoredItem> findByIdAndUserId(String itemId, String userId);
+    Optional<StoredItem> findByIdAndUserId(String id, String userId);
 }

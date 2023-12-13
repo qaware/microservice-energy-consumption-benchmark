@@ -1,3 +1,5 @@
+CREATE SCHEMA IF NOT EXISTS spring;
+
 CREATE TABLE IF NOT EXISTS spring.items
 (
     id          TEXT PRIMARY KEY,

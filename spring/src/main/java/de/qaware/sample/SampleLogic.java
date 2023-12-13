@@ -19,10 +19,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class SampleLogic {
-    private StoredItemRepository storedItemRepository;
-    private StoredPreviewRepository storedPreviewRepository;
-    private SampleMapper sampleMapper;
-    private StepClient stepClient;
+    private final StoredItemRepository storedItemRepository;
+    private final StoredPreviewRepository storedPreviewRepository;
+    private final SampleMapper sampleMapper;
+    private final StepClient stepClient;
 
     OverviewItemsList getItems(String userId, String fromId, int limit) {
         List<StoredItem> storedItemList;

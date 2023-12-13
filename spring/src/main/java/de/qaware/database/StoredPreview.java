@@ -16,11 +16,12 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Builder
 @AllArgsConstructor
-@Table(name = "spring.previews")
+@Table(name = "previews", schema = "spring")
 public class StoredPreview {
 
     @Id
     private String id;
+    private String itemId;
     private String data;
     private LocalDateTime createdAt;
 

@@ -23,8 +23,7 @@ configMapGenerator:
       - MP_JWT_VERIFY_ISSUER=sample-issuer
       - MP_JWT_VERIFY_AUDIENCES=sample-audience
       - SPRING_DATASOURCE_JDBC_URL=jdbc:postgresql://spring-database:5432/spring
-      - SPRING_REST_CLIENT_STEPS_URL=http://steps:8888
-
+      - SPRING_REST_CLIENT_STEPS_URL=http://spring-wiremock:8888
   - name: spring-flyway-config
     literals:
       - FLYWAY_URL=jdbc:postgresql://spring-database:5432/spring

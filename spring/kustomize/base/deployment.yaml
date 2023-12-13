@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: spring
-          image: 204306537988.dkr.ecr.eu-north-1.amazonaws.com/spring:latest
+          image: spring:latest
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
@@ -33,19 +33,19 @@ spec:
               memory: "500Mi"
           startupProbe:
             httpGet:
-              path: /health/started
+              path: /actuator/health/liveness
               port: 8080
             periodSeconds: 1
             failureThreshold: 30
           livenessProbe:
             httpGet:
-              path: /health/live
+              path: /actuator/health/liveness
               port: 8080
             periodSeconds: 5
             failureThreshold: 3
           readinessProbe:
             httpGet:
-              path: /health/ready
+              path: /actuator/health/readiness
               port: 8080
             periodSeconds: 2
             failureThreshold: 5

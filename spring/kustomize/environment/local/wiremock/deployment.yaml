@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: spring-wiremock
-          image: 204306537988.dkr.ecr.eu-north-1.amazonaws.com/spring-wiremock:latest
+          image: spring-wiremock:latest
           ports:
             - containerPort: 8888

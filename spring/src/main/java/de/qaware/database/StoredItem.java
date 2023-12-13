@@ -16,11 +16,12 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Builder
 @AllArgsConstructor
-@Table(name = "spring.items")
+@Table(name = "items", schema = "spring")
 public class StoredItem {
 
     @Id
     private String id;
+    private String userId;
     private String title;
     private String description;
     private String status;
