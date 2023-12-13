@@ -10,7 +10,10 @@ services:
     setup-commands:
       - sleep 10
   go-flyway:
-    entrypoint: "/bin/sh"
+    # use sleep as entry point. If we directly pass migrate to the entrypoint flyway the container stops after execution
+    entrypoint: sleep
+    command: infinity
+    # start flyway migrate explicitly
     setup-commands:
       - flyway migrate
   go-wiremock:
