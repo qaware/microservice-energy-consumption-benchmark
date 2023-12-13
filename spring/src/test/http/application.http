@@ -1,0 +1,17 @@
+### start-up check
+
+GET {{host}}/api/management/info
+
+### liveness check
+
+GET {{host}}/api/management/health/liveness
+
+### readiness check
+
+GET {{host}}/api/management/health/readiness
+
+### metrics of the service and the underlying infrastructure
+
+GET {{host}}/api/management/metrics
+
+###
