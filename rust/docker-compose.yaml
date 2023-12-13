@@ -1,5 +1,5 @@
 services:
-  rust-database:
+  database:
     image: "postgres:15.4"
     environment:
       - POSTGRES_DB=rust
@@ -8,9 +8,9 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - rust-docker-net
+      - docker-net
 
-  rust-flyway:
+  database-setup:
     image: flyway/flyway:10
     command: migrate
     environment:
@@ -21,11 +21,11 @@ services:
     volumes:
       - ./kustomize/environment/local/resources/flyway:/flyway/sql/migrations
     depends_on:
-      - rust-database
+      - database
     networks:
-      - rust-docker-net
+      - docker-net
 
-  rust-wiremock:
+  service-mock:
     image: "wiremock/wiremock:3.3.1"
     command: --container-threads=128 --port=8888
     volumes:
@@ -34,9 +34,9 @@ services:
     ports:
       - "8888:8888"
     networks:
-      - rust-docker-net
+      - docker-net
 
-  rust:
+  app:
     image: "rust:latest"
     build: .
     environment:
@@ -60,13 +60,13 @@ services:
           cpus: '0.250'
           memory: 500M
     depends_on:
-      - rust-database
-      - rust-flyway
-      - rust-wiremock
+      - database
+      - database-setup
+      - service-mock
     networks:
-      - rust-docker-net
+      - docker-net
 
 networks:
-  rust-docker-net:
+  docker-net:
 #    default driver is bridge, Green Metrics Tool cannot handle compose file with driver set
 #    driver: bridge

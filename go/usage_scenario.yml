@@ -5,30 +5,30 @@ description: Simple Webservice accessing DB and (mocked) webservice. Built in go
 compose-file: !include docker-compose.yaml
 
 services:
-  go-database:
+  database:
     # Ensure db is running before flyway is started
     setup-commands:
       - sleep 10
-  go-flyway:
+  database-setup:
     # use sleep as entry point. If we directly pass migrate to the entrypoint flyway the container stops after execution
     entrypoint: sleep
     command: infinity
     # start flyway migrate explicitly
     setup-commands:
       - flyway migrate
-  go-wiremock:
+  service-mock:
     # This command is needed, cause the container needs a boot time to work
     setup-commands:
       - sleep 10
-  go-k6:
+  load-test:
     image: "grafana/k6:0.47.0"
     entrypoint: "/bin/sh"
     networks:
-      - go-docker-net
+      - docker-net
 
 flow:
   - name: Run Load Tests
-    container: go-k6
+    container: load-test
     commands:
       - type: console
         command: k6 run /tmp/repo/test/k6/script.js
