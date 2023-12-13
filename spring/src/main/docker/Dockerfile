@@ -1,11 +1,13 @@
 # Use an OpenJDK runtime as the base image
-FROM amazoncorretto:21.0.1
+FROM azul/zulu-openjdk-debian:21-latest
 
 # Set the working directory inside the container
 WORKDIR /app
 
 # Copy the JAR file from the local build context to the container
-COPY target/spring-0.0.1-SNAPSHOT.jar /app/app.jar
+# In maven/ the files as specified in the <assembly> section is stored
+# and need to be added manually
+COPY maven/spring-*.jar /app/app.jar
 
 # Expose the port that the Spring Boot application will run on
 EXPOSE 8080
