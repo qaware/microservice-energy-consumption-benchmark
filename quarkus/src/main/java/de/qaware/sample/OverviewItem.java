@@ -2,10 +2,8 @@ package de.qaware.sample;
 
 import jakarta.json.bind.annotation.JsonbProperty;
 import lombok.Builder;
-import lombok.Singular;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Builder
 public record OverviewItem(
