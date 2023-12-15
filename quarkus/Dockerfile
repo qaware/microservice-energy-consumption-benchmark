@@ -1,6 +1,3 @@
-# For guidelines and best practices concering Dockerfiles, see:
-# https://docs.docker.com/develop/develop-images/dockerfile_best-practices/
-
 FROM azul/zulu-openjdk-debian:21-latest AS java
 
 # Update the system to obtain the latest versions of dependencies.
@@ -16,6 +13,14 @@ RUN case `uname -m` in \
   && cp -r /usr/lib/jvm/zulu21/* /opt/java \
   && cp /lib/${LINUX_ARCH}-linux-gnu/libz.* /opt/java/lib/
 
+# The application is built from its artifacts.
+COPY gradle /app/gradle
+COPY build.gradle gradlew gradle.properties lombok.config settings.gradle /app/
+COPY src/main/java /app/src/main/java
+COPY src/main/resources /app/src/main/resources
+WORKDIR /app
+RUN /app/gradlew assemble
+
 # The final container image is based on a ready-made "distro-less" image.
 FROM gcr.io/distroless/base-debian12
 
@@ -27,11 +32,11 @@ ENV JAVA_HOME=/opt/java PATH="/opt/java/bin/:${PATH}"
 COPY --from=java /opt/java /opt/java
 
 # Copy the application.
-COPY build/quarkus-app/lib/boot/* /app/lib/boot/
-COPY build/quarkus-app/lib/main/* /app/lib/main/
-COPY build/quarkus-app/quarkus/* /app/quarkus/
-COPY build/quarkus-app/quarkus-*.* /app/
-COPY build/quarkus-app/app/* /app/app/
+COPY --from=java /app/build/quarkus-app/lib/boot/* /app/lib/boot/
+COPY --from=java /app/build/quarkus-app/lib/main/* /app/lib/main/
+COPY --from=java /app/build/quarkus-app/quarkus/* /app/quarkus/
+COPY --from=java /app/build/quarkus-app/quarkus-*.* /app/
+COPY --from=java /app/build/quarkus-app/app/* /app/app/
 
 # Use an unprivileged user for executing processes in the container.
 USER nonroot

@@ -1,6 +1,7 @@
 services:
   quarkus:
     image: "quarkus:latest"
+    build: .
     environment:
       - SAMPLE_JWKS_URL=http://quarkus-wiremock:8888
       - MP_JWT_VERIFY_ISSUER=sample-issuer

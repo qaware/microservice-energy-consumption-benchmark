@@ -1,3 +1,9 @@
 *
-!src/main/docker/home/nonroot/*
-!build/quarkus-app/*
+!gradle/*
+!build.gradle
+!gradle.properties
+!gradlew
+!lombok.config
+!settings.gradle
+!src/main/java*
+!src/main/resources/*
