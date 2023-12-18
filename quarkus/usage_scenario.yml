@@ -18,6 +18,10 @@ services:
       - flyway migrate
   app:
     # This command is needed, cause the container needs a boot time to work
+    build:
+      dockerfile: src/main/docker/DockerfileNative
+      # use the following line for JVM execution
+      # dockerfile: src/main/docker/Dockerfile
     setup-commands:
       - sleep 10
   load-test:
