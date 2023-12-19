@@ -17,7 +17,7 @@ sh infrastructure/start-cluster.sh
 sh infrastructure/setup-cluster.sh
 ```
 
-Establish port for Grafana via k9s, use port 3000. Grafana should then be available at localhost:3000.
+Establish port forwarding for Grafana via k9s, use port 3000. Grafana should then be available at localhost:3000.
 Use the following credentials to log in:
 
 * username: admin
