@@ -18,7 +18,7 @@ export const options = {
   },
 };
 
-const baseUrl = 'http://app:8080/api/sample/items'
+const baseUrl = `http://${__ENV.APP_HOSTNAME || 'localhost'}:8080/api/sample/items`;
 
 const tokens = new SharedArray('tokens', function () {
   return [

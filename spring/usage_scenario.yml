@@ -29,6 +29,8 @@ services:
 flow:
   - name: Run Load Tests
     container: load-test
+    environment:
+      - APP_HOSTNAME=app
     commands:
       - type: console
         command: k6 run /tmp/repo/src/test/k6/script.js
