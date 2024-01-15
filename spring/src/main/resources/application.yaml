@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: spring
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${SPRING_DATASOURCE_JDBC_URL:jdbc:postgresql://localhost:5432/postgres}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+
+server:
+  servlet:
+    context-path: /api
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include:
+          - health
+          - metrics
+          - info
+      base-path: /management
+  endpoint:
+    health:
+      enabled: true
+      probes:
+        add-additional-paths: true
+        enabled: true
+    metrics:
+      enabled: true
+    info:
+      enabled: true
+
+logging:
+  level:
+    de.qaware: debug
+
+steps:
+  url: ${SPRING_REST_CLIENT_STEPS_URL:http://localhost:8888}

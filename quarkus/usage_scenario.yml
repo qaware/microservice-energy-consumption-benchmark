@@ -1,0 +1,46 @@
+---
+name: Quarkus K6 Load Test Scenario
+author: Andreas Weber <andreas.weber@qaware.de>
+description: Simple Webservice accessing DB and (mocked) webservice. Built in quarkus.
+compose-file: !include docker-compose.yaml
+
+services:
+  database:
+    # Ensure db is running before flyway is started
+    setup-commands:
+      - sleep 10
+  database-setup:
+    # use sleep as entry point. If we directly pass migrate to the entrypoint flyway the container stops after execution
+    entrypoint: sleep
+    command: infinity
+    # start flyway migrate explicitly
+    setup-commands:
+      - flyway migrate
+  app:
+    # This command is needed, cause the container needs a boot time to work
+    build:
+      dockerfile: Dockerfile
+      # use the following line for native execution
+      # dockerfile: DockerfileNative
+    setup-commands:
+      - sleep 10
+  load-test:
+    image: "grafana/k6:0.47.0"
+    entrypoint: "/bin/sh"
+    environment:
+      - APP_HOSTNAME=app
+    networks:
+      - docker-net
+
+flow:
+  - name: Run Load Tests
+    container: load-test
+    commands:
+      - type: console
+        command: k6 run /tmp/repo/src/test/k6/script.js
+        note: Run k6 load test
+        read-notes-stdout: true
+        log-stdout: true
+        log-stderr: true
+
+

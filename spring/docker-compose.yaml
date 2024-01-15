@@ -1,10 +1,11 @@
 services:
+
   database:
     image: "postgres:15.4"
     environment:
-      - POSTGRES_DB=rust
-      - POSTGRES_USER=rust-db-user
-      - POSTGRES_PASSWORD=rust-db-password
+      - POSTGRES_DB=spring
+      - POSTGRES_USER=spring-db-user
+      - POSTGRES_PASSWORD=spring-db-password
     ports:
       - "5432:5432"
     networks:
@@ -14,10 +15,10 @@ services:
     image: flyway/flyway:10
     command: migrate
     environment:
-      - FLYWAY_URL=jdbc:postgresql://database:5432/rust
-      - FLYWAY_SCHEMAS=rust
-      - FLYWAY_USER=rust-db-user
-      - FLYWAY_PASSWORD=rust-db-password
+      - FLYWAY_URL=jdbc:postgresql://database:5432/spring
+      - FLYWAY_SCHEMAS=spring
+      - FLYWAY_USER=spring-db-user
+      - FLYWAY_PASSWORD=spring-db-password
     volumes:
       - ./kustomize/environment/local/resources/flyway:/flyway/sql/migrations
     depends_on:
@@ -37,18 +38,15 @@ services:
       - docker-net
 
   app:
-    image: "rust:latest"
-    build: .
+    image: "spring:latest"
     environment:
-      - AUTH_JWT_JWKS_URL=http://service-mock:8888/.well-known/jwks.json
-      - AUTH_JWT_EXPECTED_ISSUER=sample-issuer
-      - AUTH_JWT_EXPECTED_AUDIENCE=sample-audience
-      - DB_HOST=database
-      - DB_PORT=5432
-      - DB_NAME=rust
-      - DB_USER=rust-db-user
-      - DB_PASSWORD=rust-db-password
-      - STEPS_URL=http://service-mock:8888
+      - SAMPLE_JWKS_URL=http://service-mock:8888
+      - MP_JWT_VERIFY_ISSUER=sample-issuer
+      - MP_JWT_VERIFY_AUDIENCES=sample-audience
+      - SPRING_DATASOURCE_JDBC_URL=jdbc:postgresql://database:5432/spring
+      - SPRING_DATASOURCE_USERNAME=spring-db-user
+      - SPRING_DATASOURCE_PASSWORD=spring-db-password
+      - SPRING_REST_CLIENT_STEPS_URL=http://service-mock:8888
     ports:
       - "8080:8080"
     deploy:

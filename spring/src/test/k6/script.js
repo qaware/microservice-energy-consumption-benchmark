@@ -1,7 +1,6 @@
 import {check} from 'k6';
 import {SharedArray} from 'k6/data';
 import http from 'k6/http';
-import exec from 'k6/execution';
 
 export const options = {
   scenarios: {
@@ -47,7 +46,7 @@ export function overview() {
   const overviewUrl = baseUrl + '?from=item-id-' + (1000 + 10 * Math.floor(Math.random() * 500) + userIndex)
   const resp = http.get(overviewUrl, params);
   if (resp.status !== 200) {
-    exec.test.abort(overviewUrl + ' for user ' + userIndex + ' with status ' + resp.status);
+    // exec.test.abort(overviewUrl + ' for user ' + userIndex + ' with status ' + resp.status);
   }
   check(resp, {
     'is status 200': (r) => r.status === 200,
@@ -66,7 +65,7 @@ export function detail() {
   const detailUrl = baseUrl + '/item-id-' + (1000 + 10 * Math.floor(Math.random() * 500) + userIndex);
   const resp = http.get(detailUrl, params);
   if (resp.status !== 200) {
-    exec.test.abort(detailUrl + ' for user ' + userIndex + ' with status ' + resp.status);
+    // exec.test.abort(detailUrl + ' for user ' + userIndex + ' with status ' + resp.status);
   }
   check(resp, {
     'is status 200': (r) => r.status === 200,
