@@ -1,30 +1,4 @@
 services:
-  app:
-    image: "spring:latest"
-    environment:
-      - SAMPLE_JWKS_URL=http://service-mock:8888
-      - MP_JWT_VERIFY_ISSUER=sample-issuer
-      - MP_JWT_VERIFY_AUDIENCES=sample-audience
-      - SPRING_DATASOURCE_JDBC_URL=jdbc:postgresql://database:5432/spring
-      - SPRING_DATASOURCE_USERNAME=spring-db-user
-      - SPRING_DATASOURCE_PASSWORD=spring-db-password
-      - SPRING_REST_CLIENT_STEPS_URL=http://service-mock:8888
-    ports:
-      - "8080:8080"
-    deploy:
-      resources:
-        limits:
-          cpus: '1.000'
-          memory: 500M
-        reservations:
-          cpus: '0.250'
-          memory: 500M
-    depends_on:
-      - database
-      - database-setup
-      - service-mock
-    networks:
-      - docker-net
 
   database:
     image: "postgres:15.4"
@@ -63,6 +37,34 @@ services:
     networks:
       - docker-net
 
+  app:
+    image: "spring:latest"
+    environment:
+      - SAMPLE_JWKS_URL=http://service-mock:8888
+      - MP_JWT_VERIFY_ISSUER=sample-issuer
+      - MP_JWT_VERIFY_AUDIENCES=sample-audience
+      - SPRING_DATASOURCE_JDBC_URL=jdbc:postgresql://database:5432/spring
+      - SPRING_DATASOURCE_USERNAME=spring-db-user
+      - SPRING_DATASOURCE_PASSWORD=spring-db-password
+      - SPRING_REST_CLIENT_STEPS_URL=http://service-mock:8888
+    ports:
+      - "8080:8080"
+    deploy:
+      resources:
+        limits:
+          cpus: '1.000'
+          memory: 500M
+        reservations:
+          cpus: '0.250'
+          memory: 500M
+    depends_on:
+      - database
+      - database-setup
+      - service-mock
+    networks:
+      - docker-net
+
 networks:
   docker-net:
-    driver: bridge
+#    default driver is bridge, Green Metrics Tool cannot handle compose file with driver set
+#    driver: bridge
