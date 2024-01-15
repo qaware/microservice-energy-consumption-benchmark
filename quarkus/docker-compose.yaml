@@ -38,8 +38,8 @@ services:
 
   app:
     build:
-      dockerfile: Dockerfile
-#      dockerfile: DockerfileNative
+      dockerfile: Dockerfile.jvm
+#      dockerfile: Dockerfile.native
       context: .
     image: "quarkus:latest"
 #    image: "quarkus-native:latest"

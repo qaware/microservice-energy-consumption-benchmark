@@ -21,7 +21,7 @@ services:
     build:
       dockerfile: Dockerfile
       # use the following line for native execution
-      # dockerfile: DockerfileNative
+      # dockerfile: Dockerfile.native
     setup-commands:
       - sleep 10
   load-test:
