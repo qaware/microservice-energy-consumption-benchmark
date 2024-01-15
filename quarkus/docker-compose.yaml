@@ -39,8 +39,10 @@ services:
   app:
     build:
       dockerfile: src/main/docker/Dockerfile
+#      dockerfile: src/main/docker/DockerfileNative
       context: .
     image: "quarkus:latest"
+#    image: "quarkus-native:latest"
     environment:
       - SAMPLE_JWKS_URL=http://service-mock:8888
       - MP_JWT_VERIFY_ISSUER=sample-issuer

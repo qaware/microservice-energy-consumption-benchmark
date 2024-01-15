@@ -19,9 +19,9 @@ services:
   app:
     # This command is needed, cause the container needs a boot time to work
     build:
-      dockerfile: src/main/docker/DockerfileNative
-      # use the following line for JVM execution
       # dockerfile: src/main/docker/Dockerfile
+      # use the following line for JVM native
+      # dockerfile: src/main/docker/DockerfileNative
     setup-commands:
       - sleep 10
   load-test:
