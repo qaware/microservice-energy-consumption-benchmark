@@ -87,7 +87,9 @@ Only required for when the codespace was newly created
 ```shell
 source .devcontainer/workshop/codespace-setup.sh
 ```
-The ports tab should now show 4 port mappings.
+The ports tab should now mappings for the ports: 9142, 9143, 9573.
+Make the port visibility for port 9142 public, if it is not public already (use right click on the mapping).
+Open the mapping for the metrics page (port 9143) in the browser (right click on the mapping, first entry in context menu).
 
 #### Clone this repo into codespace
 Only required for when the codespace was newly created
@@ -101,15 +103,17 @@ cat /home/codespace/.ssh/id_ed25519.pub
 # Go to https://gitlab.com/-/profile/keys and add the ssh key to gitlab
 ```
 
+Clone this repo
 ```shell
-# generate ssh key - replace mail by your address
-ssh-keygen -t ed25519 -C "andreas.weber@qaware.de"
-# show generated public key
-cat /home/codespace/.ssh/id_ed25519.pub
-# Go to https://gitlab.com/-/profile/keys and add the ssh key to gitlab
+git clone git@gitlab.com:qaware/internal/gilden/gse-gilde/t-stack-comparison.git
 ```
 
 #### Run green metrics tool
+Activate venv. Necessary, whenever the codespace was shutdown in between.
+```shell
+source venv/bin/activate
+```
+
 For **java/quarkus on JVM** run
 ```shell
 python3 runner.py --name 'quarkus_jvm' --uri /workspaces/green-metrics-tool/t-stack-comparison/quarkus/ --allow-unsafe
