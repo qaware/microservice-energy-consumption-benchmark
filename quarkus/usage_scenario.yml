@@ -19,7 +19,7 @@ services:
   app:
     # This command is needed, cause the container needs a boot time to work
     build:
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.jvm
       # use the following line for native execution
       # dockerfile: Dockerfile.native
     setup-commands:
