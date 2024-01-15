@@ -3,6 +3,9 @@ FROM azul/zulu-openjdk-debian:21-latest AS java
 # Update the system to obtain the latest versions of dependencies.
 RUN apt-get update && apt-get -y upgrade
 
+# Install coreutils, required for sleep (we need it for the green metrics tool measurement setup)
+RUN apt-get install coreutils
+
 # Copy all required dependencies of Java into the target Java home folder.
 RUN case `uname -m` in \
         x86_64) LINUX_ARCH=x86_64; JAVA_ARCH=amd64 ;; \
