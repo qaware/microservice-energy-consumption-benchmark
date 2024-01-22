@@ -1,8 +1,4 @@
 [
-  {"name":"de.qaware.client.ExternalStep","methods":[{"name":"<init>"}]},
-  {"name":"de.qaware.client.ExternalStepList","methods":[{"name":"<init>"}]},
-  {"name":"de.qaware.database.StoredItemMapper","methods":[{"name":"<init>"}]},
-  {"name":"de.qaware.database.StoredPreviewMapper","methods":[{"name":"<init>"}]},
   {"name":"org.jdbi.v3.core.config.internal.ConfigCaches","methods":[{"name":"<init>"}]},
   {"name":"org.jdbi.v3.sqlobject.config.internal.RegisterRowMapperImpl","methods":[{"name":"<init>"}]},
   {"name":"org.jdbi.v3.core.config.JdbiCaches","methods":[{"name":"<init>"}]},
