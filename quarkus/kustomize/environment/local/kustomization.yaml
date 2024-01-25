@@ -9,7 +9,7 @@ generatorOptions:
 resources:
   - ../../base
   - database
-  - wiremock
+  - hoverfly
   - namespace.yaml
 
 patchesStrategicMerge:
@@ -19,11 +19,11 @@ configMapGenerator:
   - name: quarkus-config
     behavior: merge
     literals:
-      - SAMPLE_JWKS_URL=http://jwks:8888
+      - SAMPLE_JWKS_URL=http://jwks:8500
       - MP_JWT_VERIFY_ISSUER=sample-issuer
       - MP_JWT_VERIFY_AUDIENCES=sample-audience
       - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://quarkus-database:5432/quarkus
-      - QUARKUS_REST_CLIENT_STEPS_URL=http://steps:8888
+      - QUARKUS_REST_CLIENT_STEPS_URL=http://steps:8500
 
   - name: quarkus-flyway-config
     literals:

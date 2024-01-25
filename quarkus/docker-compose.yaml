@@ -26,13 +26,12 @@ services:
       - docker-net
 
   service-mock:
-    image: "wiremock/wiremock:3.3.1"
-    command: --container-threads=128 --port=8888
+    image: "spectolabs/hoverfly:v1.6.3"
+    command: -webserver -log-level warn -import /simulations/jwks.json -import /simulations/steps.json -response-body-files-path /simulations
     volumes:
-      - ./kustomize/environment/local/wiremock/image/files:/home/wiremock/__files
-      - ./kustomize/environment/local/wiremock/image/mappings:/home/wiremock/mappings
+      - ./kustomize/environment/local/hoverfly/resources:/simulations
     ports:
-      - "8888:8888"
+      - "8500:8500"
     networks:
       - docker-net
 
@@ -44,13 +43,13 @@ services:
     image: "quarkus:latest"
 #    image: "quarkus-native:latest"
     environment:
-      - SAMPLE_JWKS_URL=http://service-mock:8888
+      - SAMPLE_JWKS_URL=http://service-mock:8500
       - MP_JWT_VERIFY_ISSUER=sample-issuer
       - MP_JWT_VERIFY_AUDIENCES=sample-audience
       - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://database:5432/quarkus
       - QUARKUS_DATASOURCE_USERNAME=quarkus-db-user
       - QUARKUS_DATASOURCE_PASSWORD=quarkus-db-password
-      - QUARKUS_REST_CLIENT_STEPS_URL=http://service-mock:8888
+      - QUARKUS_REST_CLIENT_STEPS_URL=http://service-mock:8500
     ports:
       - "8080:8080"
     deploy:

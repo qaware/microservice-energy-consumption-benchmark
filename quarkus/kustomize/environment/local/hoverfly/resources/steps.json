@@ -1,0 +1,44 @@
+{
+  "data": {
+    "pairs": [
+      {
+        "request": {
+          "scheme": [
+            {
+              "matcher": "exact",
+              "value": "http"
+            }
+          ],
+          "method": [
+            {
+              "matcher": "exact",
+              "value": "GET"
+            }
+          ],
+          "path": [
+            {
+              "matcher": "glob",
+              "value": "/api/items/*/steps"
+            }
+          ]
+        },
+        "response": {
+          "status": 200,
+          "headers": {
+            "Content-Type": [
+              "application/json"
+            ]
+          },
+          "bodyFile": "steps-response.json",
+          "templated": true,
+          "logNormalDelay": {
+            "min": 15,
+            "max": 30,
+            "mean": 22,
+            "median": 18
+          }
+        }
+      }
+    ]
+  }
+}

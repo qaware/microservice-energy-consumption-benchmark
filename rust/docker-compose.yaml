@@ -26,13 +26,12 @@ services:
       - docker-net
 
   service-mock:
-    image: "wiremock/wiremock:3.3.1"
-    command: --container-threads=128 --port=8888
+    image: "spectolabs/hoverfly:v1.6.3"
+    command: -webserver -log-level warn -import /simulations/jwks.json -import /simulations/steps.json -response-body-files-path /simulations
     volumes:
-      - ./kustomize/environment/local/wiremock/image/files:/home/wiremock/__files
-      - ./kustomize/environment/local/wiremock/image/mappings:/home/wiremock/mappings
+      - ./kustomize/environment/local/hoverfly/resources:/simulations
     ports:
-      - "8888:8888"
+      - "8500:8500"
     networks:
       - docker-net
 
@@ -40,7 +39,7 @@ services:
     image: "rust:latest"
     build: .
     environment:
-      - AUTH_JWT_JWKS_URL=http://service-mock:8888/.well-known/jwks.json
+      - AUTH_JWT_JWKS_URL=http://service-mock:8500/.well-known/jwks.json
       - AUTH_JWT_EXPECTED_ISSUER=sample-issuer
       - AUTH_JWT_EXPECTED_AUDIENCE=sample-audience
       - DB_HOST=database
@@ -48,7 +47,7 @@ services:
       - DB_NAME=rust
       - DB_USER=rust-db-user
       - DB_PASSWORD=rust-db-password
-      - STEPS_URL=http://service-mock:8888
+      - STEPS_URL=http://service-mock:8500
     ports:
       - "8080:8080"
     deploy:
