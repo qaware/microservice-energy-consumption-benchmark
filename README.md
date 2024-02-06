@@ -81,9 +81,14 @@ https://github.com/andreaswe/green-metrics-tool/tree/codespaces
 ### Setup Green Metrics Tool via Codespaces
 
 #### Create Codespace
+Go to https://github.com/andreaswe/green-metrics-tool/tree/codespaces, click on: 
 
-Go to https://github.com/andreaswe/green-metrics-tool/tree/codespaces, click on 'Code' > 'Codespaces' > '...' > 'New
-with options ...' > Machine type '4-core' > Create codespace.
+'Code' --> 'Codespaces' --> '...' --> 'New with options ...' 
+
+* Machine type: '4-core'
+* Dev container configuration: Workshop
+
+--> Create codespace.
 
 Once the codespace is setup you can reuse it. No need to recreate it every time.
 
