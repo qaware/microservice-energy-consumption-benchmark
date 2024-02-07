@@ -11,10 +11,25 @@ Install and configure required tools:
 * eksctl: see https://eksctl.io/installation
 * Helm: see https://helm.sh/docs/intro/install
 
+You can adapt the cluster configuration in [`infrastructure/green-eks-k8s.yaml`](./infrastructure/green-eks-k8s.yaml).
+
+Log in to the ECR to push container images (also required for Karpenter):
+
+```shell
+aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 204306537988.dkr.ecr.eu-north-1.amazonaws.com
+```
+
 Start the cluster with all required tools:
 
 ```shell
 sh infrastructure/start-cluster.sh
+```
+
+### Setting up Kepler
+
+If you want to set up Kepler, run the setup script:
+
+```shell
 sh infrastructure/setup-cluster.sh
 ```
 
@@ -25,12 +40,6 @@ Use the following credentials to log in:
 * password: prom-operator
 
 Go to http://localhost:3000/dashboard/import to import the [Kepler dashboard](infrastructure/Kepler-Exporter.json).
-
-Log in to the ECR to push container images:
-
-```shell
-aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 204306537988.dkr.ecr.eu-north-1.amazonaws.com
-```
 
 ### Run the load tests
 
@@ -81,9 +90,10 @@ https://github.com/andreaswe/green-metrics-tool/tree/codespaces
 ### Setup Green Metrics Tool via Codespaces
 
 #### Create Codespace
-Go to https://github.com/andreaswe/green-metrics-tool/tree/codespaces, click on: 
 
-'Code' --> 'Codespaces' --> '...' --> 'New with options ...' 
+Go to https://github.com/andreaswe/green-metrics-tool/tree/codespaces, click on:
+
+'Code' --> 'Codespaces' --> '...' --> 'New with options ...'
 
 * Machine type: '4-core'
 * Dev container configuration: Workshop

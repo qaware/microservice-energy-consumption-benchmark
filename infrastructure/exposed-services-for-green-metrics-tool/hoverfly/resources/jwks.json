@@ -1,0 +1,37 @@
+{
+  "data": {
+    "pairs": [
+      {
+        "request": {
+          "scheme": [
+            {
+              "matcher": "exact",
+              "value": "http"
+            }
+          ],
+          "method": [
+            {
+              "matcher": "exact",
+              "value": "GET"
+            }
+          ],
+          "path": [
+            {
+              "mather": "exact",
+              "value": "/.well-known/jwks.json"
+            }
+          ]
+        },
+        "response": {
+          "status": 200,
+          "headers": {
+            "Content-Type": [
+              "application/json"
+            ]
+          },
+          "bodyFile": "jwks-response.json"
+        }
+      }
+    ]
+  }
+}

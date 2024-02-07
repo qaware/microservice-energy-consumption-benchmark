@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hoverfly
+  namespace: hoverfly
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: hoverfly
+  template:
+    metadata:
+      labels:
+        name: hoverfly
+    spec:
+      containers:
+        - name: hoverfly
+          image: spectolabs/hoverfly:v1.6.3
+          args:
+            - -webserver
+            - -log-level
+            - warn
+            - -import
+            - /simulations/jwks.json
+            - -import
+            - /simulations/steps.json
+            - -response-body-files-path
+            - /responses
+          volumeMounts:
+            - name: hoverfly-simulations-volume
+              mountPath: /simulations
+              readOnly: true
+            - name: hoverfly-responses-volume
+              mountPath: /responses
+              readOnly: true
+      volumes:
+        - name: hoverfly-simulations-volume
+          configMap:
+            name: hoverfly-simulations
+        - name: hoverfly-responses-volume
+          configMap:
+            name: hoverfly-responses
