@@ -30,7 +30,7 @@ sh infrastructure/start-cluster.sh
 If you want to set up Kepler, run the setup script:
 
 ```shell
-sh infrastructure/setup-cluster.sh
+sh infrastructure/setup-cluster-for-kepler.sh
 ```
 
 The setup-script will establish port-forwarding for Grafana on port 3000 and should open localhost:3000 in a browser.

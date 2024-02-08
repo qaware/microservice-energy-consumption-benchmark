@@ -1,7 +1,6 @@
 trigger_mode(TRIGGER_MODE_MANUAL)
 
 docker_build('204306537988.dkr.ecr.eu-north-1.amazonaws.com/quarkus:latest', '.')
-docker_build('204306537988.dkr.ecr.eu-north-1.amazonaws.com/quarkus-wiremock:latest', 'kustomize/environment/local/wiremock/image')
 
 allow_k8s_contexts('FWE@green-eks-k8s.eu-north-1.eksctl.io')
 
@@ -12,4 +11,4 @@ k8s_resource(
     port_forwards=[port_forward(local_port=8080, container_port=8080, name='http')])
 
 k8s_resource(workload='quarkus-database', port_forwards=5432)
-k8s_resource(workload='quarkus-wiremock', port_forwards=8888)
+k8s_resource(workload='quarkus-hoverfly', port_forwards=[8500, 8888])
