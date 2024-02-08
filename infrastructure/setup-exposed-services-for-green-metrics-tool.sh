@@ -1,10 +1,10 @@
-cluster_name="green-eks-k8s"
-cluster_region="eu-north-1"
-aws_account_id="204306537988"
+export cluster_name="green-eks-k8s"
+export cluster_region="eu-north-1"
+export aws_account_id="204306537988"
 
 # Create OIDC provider
 
-oidc_id=$(aws eks describe-cluster --name $cluster_name --region $cluster_region --query "cluster.identity.oidc.issuer" --output text | cut -d '/' -f 5)
+export oidc_id=$(aws eks describe-cluster --name $cluster_name --region $cluster_region --query "cluster.identity.oidc.issuer" --output text | cut -d '/' -f 5)
 
 echo "The OIDC issuer id for the cluster $cluster_name is $oidc_id"
 
