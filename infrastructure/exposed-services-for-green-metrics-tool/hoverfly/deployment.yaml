@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: hoverfly
-  namespace: hoverfly
 spec:
   replicas: 3
   selector:
