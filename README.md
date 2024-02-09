@@ -25,6 +25,26 @@ Start the cluster with all required tools:
 sh infrastructure/start-cluster.sh
 ```
 
+### Allow access for other users
+By default, only the user that created the cluster has access to the cluster. To allow other users to access the cluster, you need to create an IAM identity mapping for the user.
+
+Get the ARN of the user you own user, that you want to add:
+
+```shell
+aws sts get-caller-identity
+```
+
+Create an IAM identity mapping for the user
+```shell
+eksctl create iamidentitymapping \
+--cluster green-eks-k8s \
+--region eu-north-1 \
+--arn arn:aws:iam::204306537988:user/FWE \
+--group system:masters \
+--no-duplicate-arns \
+--username florian
+```
+
 ### Setting up Kepler
 
 If you want to set up Kepler, run the setup script:
