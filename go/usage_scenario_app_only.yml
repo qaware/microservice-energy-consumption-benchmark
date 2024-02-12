@@ -18,7 +18,7 @@ flow:
     container: database-setup
     commands:
       - type: console
-        command: sleep 300
+        command: sleep 60
         note: Run load test manually now
         read-notes-stdout: true
         log-stdout: true
