@@ -1,0 +1,47 @@
+services:
+  database-setup:
+    image: flyway/flyway:10
+    command: migrate
+    environment:
+      - FLYWAY_URL=jdbc:postgresql://DB_HOST:5432/gmt
+      - FLYWAY_SCHEMAS=quarkus
+      - FLYWAY_USER=gmt
+      - FLYWAY_PASSWORD=GSE2024!
+    volumes:
+      - ./kustomize/environment/local/resources/flyway:/flyway/sql/migrations
+
+    networks:
+      - docker-net
+
+  app:
+    build:
+      dockerfile: Dockerfile.jvm
+#      dockerfile: Dockerfile.native
+      context: .
+    image: "quarkus:latest"
+#    image: "quarkus-native:latest"
+    environment:
+      - SAMPLE_JWKS_URL=http://$SERVICE_MOCK_HOST_PORT
+      - MP_JWT_VERIFY_ISSUER=sample-issuer
+      - MP_JWT_VERIFY_AUDIENCES=sample-audience
+      - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://$DB_HOST:5432/gmt
+      - QUARKUS_DATASOURCE_USERNAME=gmt
+      - QUARKUS_DATASOURCE_PASSWORD=GSE2024!
+      - QUARKUS_REST_CLIENT_STEPS_URL=http://$SERVICE_MOCK_HOST_PORT
+    ports:
+      - "8080:8080"
+    deploy:
+      resources:
+        limits:
+          cpus: '1.000'
+          memory: 500M
+        reservations:
+          cpus: '0.250'
+          memory: 500M
+    depends_on:
+      - database-setup
+    networks:
+      - docker-net
+
+networks:
+  docker-net:
