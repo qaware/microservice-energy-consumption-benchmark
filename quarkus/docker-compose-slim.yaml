@@ -3,7 +3,7 @@ services:
     image: flyway/flyway:10
     command: migrate
     environment:
-      - FLYWAY_URL=jdbc:postgresql://DB_HOST:5432/gmt
+      - FLYWAY_URL=jdbc:postgresql://$DB_HOST:5432/gmt
       - FLYWAY_SCHEMAS=quarkus
       - FLYWAY_USER=gmt
       - FLYWAY_PASSWORD=GSE2024!
