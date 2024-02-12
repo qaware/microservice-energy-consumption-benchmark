@@ -17,11 +17,11 @@ services:
     image: "rust:latest"
     build: .
     environment:
-      - AUTH_JWT_JWKS_URL=$SERVICE_MOCK_HOST_PORT/.well-known/jwks.json
+      - AUTH_JWT_JWKS_URL=http://$SERVICE_MOCK_HOST_PORT/.well-known/jwks.json
       - AUTH_JWT_EXPECTED_ISSUER=sample-issuer
       - AUTH_JWT_EXPECTED_AUDIENCE=sample-audience
       - DB_CONNECTION=postgresql://gmt:GSE2024!@$DB_HOST:5432/gmt
-      - STEPS_URL=$SERVICE_MOCK_HOST_PORT
+      - STEPS_URL=http://$SERVICE_MOCK_HOST_PORT
     ports:
       - "8080:8080"
     deploy:
