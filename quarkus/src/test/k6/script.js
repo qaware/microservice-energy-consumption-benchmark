@@ -5,12 +5,12 @@ import http from 'k6/http';
 export const options = {
   scenarios: {
     overview: {
-      executor: 'constant-arrival-rate', duration: '20s', rate: 50, timeUnit: '1s',
+      executor: 'constant-arrival-rate', duration: '300s', rate: 100, timeUnit: '1s',
       preAllocatedVUs: 100, maxVUs: 300,
       exec: 'overview',
     },
     detail: {
-      executor: 'constant-arrival-rate', duration: '20s', rate: 200, timeUnit: '1s',
+      executor: 'constant-arrival-rate', duration: '300s', rate: 400, timeUnit: '1s',
       preAllocatedVUs: 100, maxVUs: 1000,
       exec: 'detail',
     },
