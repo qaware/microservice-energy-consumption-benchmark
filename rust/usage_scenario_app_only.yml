@@ -1,7 +1,7 @@
 ---
-name: Quarkus K6 Load Test Scenario Slim
+name: Rust K6 Load Test Scenario Slim
 author: Andreas Weber <andreas.weber@qaware.de>
-description: Simple Webservice accessing DB and (mocked) webservice. Built in quarkus.
+description: Simple Webservice accessing DB and (mocked) webservice. Built in rust.
 compose-file: !include docker-compose-slim.yaml
 
 services:
@@ -12,14 +12,6 @@ services:
     # start flyway migrate explicitly
     setup-commands:
       - flyway migrate
-  app:
-    build:
-      dockerfile: Dockerfile.jvm
-      # use the following line for native execution
-      # dockerfile: Dockerfile.native
-    setup-commands:
-      # Enough time for starting the load test manually
-      - sleep 60
 
 flow:
   - name: Run Load Tests
