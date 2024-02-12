@@ -22,15 +22,6 @@ services:
       - sleep 60
 
 flow:
-  - name: Print Host Name & Port
-    container: database-setup
-    commands:
-      - type: console
-        command: echo "export https://${CODESPACE_NAME}-8080.app.github.dev:443"
-        note: Run load test manually now
-        read-notes-stdout: true
-        log-stdout: true
-        log-stderr: true
   - name: Run Load Tests
     container: database-setup
     commands:
