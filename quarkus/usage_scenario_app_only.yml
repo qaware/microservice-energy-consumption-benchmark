@@ -17,16 +17,13 @@ services:
       dockerfile: Dockerfile.jvm
       # use the following line for native execution
       # dockerfile: Dockerfile.native
-    setup-commands:
-      # Enough time for starting the load test manually
-      - sleep 60
 
 flow:
   - name: Run Load Tests
     container: database-setup
     commands:
       - type: console
-        command: sleep 300
+        command: sleep 60
         note: Run load test manually now
         read-notes-stdout: true
         log-stdout: true
