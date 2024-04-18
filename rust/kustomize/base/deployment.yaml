@@ -30,6 +30,7 @@ spec:
               cpu: "250m"
               memory: "500Mi"
             limits:
+              cpu: "1000m"
               memory: "500Mi"
           startupProbe:
             httpGet:

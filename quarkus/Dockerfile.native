@@ -1,19 +1,37 @@
-# build app
 FROM quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-21 AS build
 USER root
 RUN microdnf install findutils
-USER quarkus
-WORKDIR /code
-COPY gradle ./gradle
-COPY gradlew build.gradle gradle.properties settings.gradle lombok.config ./
-COPY src/ ./src
-RUN ./gradlew --no-daemon clean assemble --stacktrace -Dquarkus.package.type=native
-RUN ls -la build/
+RUN mkdir "/app" && chown quarkus:quarkus "/app"
 
-## Stage 2 : create the docker final image
-FROM quay.io/quarkus/quarkus-micro-image:2.0
-WORKDIR /work/
-COPY --from=build /code/build/*-runner /work/application
-RUN chmod 775 /work
-EXPOSE 8080
-CMD ["./application", "-Dquarkus.http.host=0.0.0.0"]
+# Copy all required dependencies of Java into the target dependencies folder.
+RUN mkdir -p /opt/deps \
+  && cp /lib64/libz.* /opt/deps
+
+USER quarkus
+
+# The application is built from its artifacts.
+COPY gradle /app/gradle
+COPY build.gradle gradlew gradle.properties lombok.config settings.gradle /app/
+COPY src/main/java /app/src/main/java
+COPY src/main/resources /app/src/main/resources
+WORKDIR /app
+RUN /app/gradlew --no-daemon assemble -Dquarkus.package.type=native
+
+# The final container image is based on a ready-made "distro-less" image.
+FROM gcr.io/distroless/base-nossl-debian12 AS runtime
+
+# Provide default values for language and locale.
+ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
+
+# Copy dependencues from the build container image.
+COPY --from=build /opt/deps /lib/aarch64-linux-gnu
+COPY --from=build /opt/deps /lib/x86_64-linux-gnu
+
+# Copy the application.
+COPY --from=build /app/build/*-runner /usr/local/bin/app
+
+# Use an unprivileged user for executing processes in the container.
+USER nonroot
+WORKDIR /home/nonroot
+
+ENTRYPOINT ["/usr/local/bin/app", "-Dquarkus.http.host=0.0.0.0"]

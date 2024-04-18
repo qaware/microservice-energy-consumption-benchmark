@@ -49,30 +49,18 @@ f3cg+fr8aou7pr9SHhJlZCU=
 -----END PRIVATE KEY-----
 ```
 
-## Setup for docker-compose (Greenframe)
+## Setup for docker-compose (LiMo)
 
-Build the application:
+Build and run the application:
 
 ```shell
-docker-compose build go
+docker-compose up --build
 ```
 
-Run the dependencies:
+Optionally view the resource consumption via Docker statistics:
 
 ```shell
-docker-compose up go-database go-flyway go-wiremock
-```
-
-Run the application:
-
-```shell
-docker-compose up go
-```
-
-View the resource consumption via Docker statistics:
-
-```shell
-docker stats go-go-1
+docker stats go-app-1
 ```
 
 Run the load test via k6:
@@ -81,10 +69,16 @@ Run the load test via k6:
 k6 run test/k6/script.js
 ```
 
-Run the measurement via Greenframe:
+Run the measurement via [LiMo](../tools/limo/README.md):
 
 ```shell
-greenframe analyze
+../tools/limo/limo go-app-1 10s 15
+```
+
+Stop the application:
+
+```shell
+docker-compose rm
 ```
 
 ## Setup for Tilt and Kubernetes

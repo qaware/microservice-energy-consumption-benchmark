@@ -1,18 +1,45 @@
-# cache dependencies
-FROM gradle:jdk21-alpine AS cache
-WORKDIR /code
-COPY gradlew .
-COPY build.gradle gradle.properties settings.gradle ./
-ENV GRADLE_USER_HOME /cache
-RUN gradle build --no-daemon --stacktrace
+FROM azul/zulu-openjdk-debian:21-latest AS build
 
-# build app
-FROM  gradle:jdk21-alpine AS builder
-WORKDIR /code
-COPY --from=cache /cache /home/gradle/.gradle
-COPY . $BUILD_HOME/
-COPY build.gradle gradle.properties settings.gradle lombok.config ./
-COPY src/ /code/src
-RUN gradle --no-daemon clean assemble --stacktrace
+# Update the system to obtain the latest versions of dependencies.
+RUN apt-get update && apt-get -y upgrade
 
-CMD ["java", "-jar", "build/quarkus-app/quarkus-run.jar", "-Dquarkus.http.host=0.0.0.0"]
+# Copy all required dependencies of Java into the target Java home folder.
+RUN case `uname -m` in \
+        x86_64) LINUX_ARCH=x86_64; JAVA_ARCH=amd64 ;; \
+        aarch64) LINUX_ARCH=aarch64 ; JAVA_ARCH=arm64 ;; \
+        *) echo "unsupported architecture, exiting ..."; exit 1; ;; \
+    esac \
+  && mkdir -p /opt/java \
+  && cp -r /usr/lib/jvm/zulu21/* /opt/java \
+  && cp /lib/${LINUX_ARCH}-linux-gnu/libz.* /opt/java/lib/
+
+# The application is built from its artifacts.
+COPY gradle /app/gradle
+COPY build.gradle gradlew gradle.properties lombok.config settings.gradle /app/
+COPY src/main/java /app/src/main/java
+COPY src/main/resources /app/src/main/resources
+WORKDIR /app
+RUN /app/gradlew --no-daemon assemble
+
+# The final container image is based on a ready-made "distro-less" image.
+FROM gcr.io/distroless/base-nossl-debian12 AS runtime
+
+# Provide default values for language and locale.
+ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
+
+# Copy Java and its dependencies from the build container image.
+ENV JAVA_HOME=/opt/java PATH="/opt/java/bin/:${PATH}"
+COPY --from=build /opt/java /opt/java
+
+# Copy the application.
+COPY --from=build /app/build/quarkus-app/lib/boot/* /app/lib/boot/
+COPY --from=build /app/build/quarkus-app/lib/main/* /app/lib/main/
+COPY --from=build /app/build/quarkus-app/quarkus/* /app/quarkus/
+COPY --from=build /app/build/quarkus-app/quarkus-*.* /app/
+COPY --from=build /app/build/quarkus-app/app/* /app/app/
+
+# Use an unprivileged user for executing processes in the container.
+USER nonroot
+WORKDIR /home/nonroot
+
+ENTRYPOINT [ "/opt/java/bin/java", "-jar", "/app/quarkus-run.jar" ]

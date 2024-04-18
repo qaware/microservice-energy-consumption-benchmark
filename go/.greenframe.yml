@@ -1,7 +1,0 @@
-baseURL: http://localhost:8080
-scenarios:
-  - name: load test
-    path: ./test/greenframe/scenario.js
-samples: 5
-containers:
-  - "go-go-1"

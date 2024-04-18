@@ -49,7 +49,7 @@ f3cg+fr8aou7pr9SHhJlZCU=
 -----END PRIVATE KEY-----
 ```
 
-## Setup for docker-compose (Greenframe)
+## Setup for docker-compose (LiMo)
 
 Build and run the application:
 
@@ -57,10 +57,10 @@ Build and run the application:
 docker-compose up --build
 ```
 
-View the resource consumption via Docker statistics:
+Optionally view the resource consumption via Docker statistics:
 
 ```shell
-docker stats rust-rust-1
+docker stats rust-app-1
 ```
 
 Run the load test via k6:
@@ -69,10 +69,16 @@ Run the load test via k6:
 k6 run test/k6/script.js
 ```
 
-Run the measurement via Greenframe:
+Run the measurement via [LiMo](../tools/limo/README.md):
 
 ```shell
-greenframe analyze
+../tools/limo/limo rust-app-1 10s 15
+```
+
+Stop the application:
+
+```shell
+docker-compose rm
 ```
 
 ## Setup for Tilt and Kubernetes

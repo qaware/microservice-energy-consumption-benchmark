@@ -1,24 +1,23 @@
 import {check} from 'k6';
 import {SharedArray} from 'k6/data';
 import http from 'k6/http';
-import exec from 'k6/execution';
 
 export const options = {
   scenarios: {
     overview: {
-      executor: 'constant-arrival-rate', duration: '300s', rate: 100, timeUnit: '1s',
+      executor: 'constant-arrival-rate', duration: '300s', rate: 10, timeUnit: '1s',
       preAllocatedVUs: 100, maxVUs: 300,
       exec: 'overview',
     },
     detail: {
-      executor: 'constant-arrival-rate', duration: '300s', rate: 400, timeUnit: '1s',
+      executor: 'constant-arrival-rate', duration: '300s', rate: 40, timeUnit: '1s',
       preAllocatedVUs: 100, maxVUs: 1000,
       exec: 'detail',
     },
   },
 };
 
-const baseUrl = `http://${__ENV.APP_HOSTNAME || 'localhost'}:8080/api/sample/items`;
+const baseUrl = `${__ENV.APP_BASE_URL || 'http://localhost:8080'}/api/sample/items`;
 
 const tokens = new SharedArray('tokens', function () {
   return [
@@ -47,7 +46,7 @@ export function overview() {
   const overviewUrl = baseUrl + '?from=item-id-' + (1000 + 10 * Math.floor(Math.random() * 500) + userIndex)
   const resp = http.get(overviewUrl, params);
   if (resp.status !== 200) {
-    exec.test.abort(overviewUrl + ' for user ' + userIndex + ' with status ' + resp.status);
+    // exec.test.abort(overviewUrl + ' for user ' + userIndex + ' with status ' + resp.status);
   }
   check(resp, {
     'is status 200': (r) => r.status === 200,

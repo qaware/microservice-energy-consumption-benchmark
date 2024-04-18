@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quarkus
+spec:
+  selector:
+    matchLabels:
+      app: quarkus
+  template:
+    spec:
+      containers:
+        - name: quarkus
+          image: 204306537988.dkr.ecr.eu-north-1.amazonaws.com/quarkus-native:latest

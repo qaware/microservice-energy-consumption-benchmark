@@ -37,11 +37,9 @@ services:
 
   app:
     build:
-      dockerfile: Dockerfile.jvm
-#      dockerfile: Dockerfile.native
+      dockerfile: Dockerfile.${MODE}
       context: .
-    image: "quarkus:latest"
-#    image: "quarkus-native:latest"
+    image: "quarkus-${MODE}:latest"
     environment:
       - SAMPLE_JWKS_URL=http://service-mock:8500
       - MP_JWT_VERIFY_ISSUER=sample-issuer
@@ -69,5 +67,3 @@ services:
 
 networks:
   docker-net:
-#    default driver is bridge, Green Metrics Tool cannot handle compose file with driver set
-#    driver: bridge
