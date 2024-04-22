@@ -155,7 +155,7 @@ Clone this repo
 git clone git@gitlab.com:qaware/internal/gilden/gse-gilde/t-stack-comparison.git
 ```
 
-#### Run green metrics tool
+### Run green metrics tool
 
 Activate venv. Necessary, whenever the codespace was shutdown in between.
 
@@ -163,12 +163,13 @@ Activate venv. Necessary, whenever the codespace was shutdown in between.
 source venv/bin/activate
 ```
 
-For **java/quarkus on JVM** run
+#### Quarkus JVM
 
 ```shell
 python3 runner.py --name 'quarkus_jvm' --uri /workspaces/green-metrics-tool/t-stack-comparison/quarkus/ --allow-unsafe
 ```
 
+#### Quarkus Native
 For **java/quarkus native** edit the [quarkus/usage_scenario.yml](quarkus/usage_scenario.yml) and
 replace `dockerfile: Dockerfile.jvm` with `dockerfile: Dockerfile.native`. Afterwards run:
 
@@ -176,13 +177,13 @@ replace `dockerfile: Dockerfile.jvm` with `dockerfile: Dockerfile.native`. After
 python3 runner.py --name 'quarkus_native' --uri /workspaces/green-metrics-tool/t-stack-comparison/quarkus/ --allow-unsafe
 ```
 
-For **go** run
+#### Rust
 
 ```shell
 python3 runner.py --name 'go' --uri /workspaces/green-metrics-tool/t-stack-comparison/go/ --allow-unsafe
 ```
 
-For **rust** run
+#### Go
 
 ```shell
 python3 runner.py --name 'rust' --uri /workspaces/green-metrics-tool/t-stack-comparison/rust/ --allow-unsafe
