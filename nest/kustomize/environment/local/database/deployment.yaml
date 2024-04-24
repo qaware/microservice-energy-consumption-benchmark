@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nest-database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: nest-database
+  template:
+    metadata:
+      labels:
+        name: nest-database
+    spec:
+      containers:
+        - name: nest-database
+          image: postgres:15.4
+          imagePullPolicy: "IfNotPresent"
+          env:
+            - name: POSTGRES_DB
+              value: nest
+          envFrom:
+            - secretRef:
+                name: nest-database-secrets
+          ports:
+            - containerPort: 5432
