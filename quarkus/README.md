@@ -49,44 +49,6 @@ f3cg+fr8aou7pr9SHhJlZCU=
 -----END PRIVATE KEY-----
 ```
 
-## Setup for docker-compose (LiMo)
-
-Build and run the application in JVM mode:
-
-```shell
-MODE=jvm docker-compose up --build
-```
-
-Build and run the application in native mode:
-
-```shell
-MODE=native docker-compose up --build
-```
-
-Optionally view the resource consumption via Docker statistics:
-
-```shell
-docker stats quarkus-app-1
-```
-
-Run the load test via k6:
-
-```shell
-k6 run src/test/k6/script.js
-```
-
-Run the measurement via [LiMo](../tools/limo/README.md):
-
-```shell
-../tools/limo/limo quarkus-app-1 10s 15
-```
-
-Stop the application:
-
-```shell
-docker-compose rm
-```
-
 ## Setup for Tilt and Kubernetes
 
 Build and run the application:

@@ -49,38 +49,6 @@ f3cg+fr8aou7pr9SHhJlZCU=
 -----END PRIVATE KEY-----
 ```
 
-## Setup for docker-compose (LiMo)
-
-Build and run the application:
-
-```shell
-docker-compose up --build
-```
-
-Optionally view the resource consumption via Docker statistics:
-
-```shell
-docker stats go-app-1
-```
-
-Run the load test via k6:
-
-```shell
-k6 run test/k6/script.js
-```
-
-Run the measurement via [LiMo](../tools/limo/README.md):
-
-```shell
-../tools/limo/limo go-app-1 10s 15
-```
-
-Stop the application:
-
-```shell
-docker-compose rm
-```
-
 ## Setup for Tilt and Kubernetes
 
 Build and run the application:
