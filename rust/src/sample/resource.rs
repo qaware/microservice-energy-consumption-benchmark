@@ -127,7 +127,7 @@ pub async fn get_detail(
                 duration_in_ms: s.duration_in_ms,
             })
             .collect(),
-        updated_at: chrono::offset::Utc::now(),
+        updated_at: Utc.from_utc_datetime(&item.updated_at),
     })
 }
 
