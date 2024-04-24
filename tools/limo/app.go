@@ -60,6 +60,7 @@ var lastNetworkSentBytes map[string]uint64
 var cpuWhs []float64
 var memoryWhs []float64
 var networkWhs []float64
+var coreWhs []float64
 var totalWhs []float64
 
 func initialize(cnt container) {
@@ -99,21 +100,23 @@ func summary(iteration int) {
 	}
 	networkWh := networkEnergyFactor * float64(networkTotalBytes) / gb
 
+	coreWh := cpuWh + memoryWh
 	totalWh := cpuWh + memoryWh + networkWh
 
 	cpuWhs = append(cpuWhs, cpuWh)
 	memoryWhs = append(memoryWhs, memoryWh)
 	networkWhs = append(networkWhs, networkWh)
+	coreWhs = append(coreWhs, coreWh)
 	totalWhs = append(totalWhs, totalWh)
 	initialized = false
 
-	fmt.Printf("[Iteration %2d]   CPU %.3f Wh   MEMORY %.3f Wh   NETWORK %.3f Wh   TOTAL %.3f Wh\n",
-		iteration, cpuWh, memoryWh, networkWh, totalWh)
+	fmt.Printf("[Iteration %2d]   CPU %.3f Wh   MEMORY %.3f Wh   NETWORK %.3f Wh   CORE %.3f WH   TOTAL %.3f Wh\n",
+		iteration, cpuWh, memoryWh, networkWh, coreWh, totalWh)
 }
 
 func totalSummary() {
-	fmt.Printf("\n[Total]          CPU %.3f Wh   MEMORY %.3f Wh   NETWORK %.3f Wh   TOTAL %.3f Wh\n",
-		averages(cpuWhs), averages(memoryWhs), averages(networkWhs), averages(totalWhs))
+	fmt.Printf("\n[Total]          CPU %.3f Wh   MEMORY %.3f Wh   NETWORK %.3f Wh   CORE %.3f WH   TOTAL %.3f Wh\n",
+		averages(cpuWhs), averages(memoryWhs), averages(networkWhs), averages(coreWhs), averages(totalWhs))
 }
 
 func getNetworkBytes(networks map[string]network) (names []string, received map[string]uint64, sent map[string]uint64) {
