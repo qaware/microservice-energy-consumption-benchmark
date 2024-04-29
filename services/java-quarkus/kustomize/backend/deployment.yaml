@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: java-quarkus-backend
+spec:
+  selector:
+    matchLabels:
+      name: java-quarkus-backend
+  strategy:
+    type: RollingUpdate
+  revisionHistoryLimit: 10
+  template:
+    metadata:
+      labels:
+        name: java-quarkus-backend
+    spec:
+      containers:
+        - name: java-quarkus-backend
+          image: 204306537988.dkr.ecr.eu-north-1.amazonaws.com/backend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8500
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "500Mi"
+            limits:
+              cpu: "1000m"
+              memory: "500Mi"
+          startupProbe:
+            httpGet:
+              path: /health/started
+              port: 8080
+            periodSeconds: 1
+            failureThreshold: 30
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 8080
+            periodSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8080
+            periodSeconds: 2
+            failureThreshold: 5

@@ -1,0 +1,48 @@
+plugins {
+    id "java"
+    id "io.quarkus" version "3.9.5"
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    // Quarkus
+    implementation enforcedPlatform("io.quarkus.platform:quarkus-bom:3.9.5")
+    implementation "io.quarkus:quarkus-arc"
+    implementation "io.quarkus:quarkus-hibernate-validator"
+    implementation "io.quarkus:quarkus-micrometer-registry-prometheus"
+    implementation "io.quarkus:quarkus-resteasy-reactive-jackson"
+    implementation "io.quarkus:quarkus-rest-client-jackson"
+    implementation "io.quarkus:quarkus-security"
+    implementation "io.quarkus:quarkus-smallrye-fault-tolerance"
+    implementation "io.quarkus:quarkus-smallrye-health"
+    implementation "io.quarkus:quarkus-smallrye-jwt"
+    implementation "io.quarkiverse.loggingjson:quarkus-logging-json:3.0.0"
+
+    // Lombok
+    annotationProcessor "org.projectlombok:lombok:1.18.30"
+    compileOnly "org.projectlombok:lombok:1.18.30"
+
+    // MapStruct
+    implementation "org.mapstruct:mapstruct:1.5.5.Final"
+    annotationProcessor "org.mapstruct:mapstruct-processor:1.5.5.Final"
+
+    // Lombok & MapStruct interoperability
+    annotationProcessor "org.projectlombok:lombok-mapstruct-binding:0.2.0"
+}
+
+version "1.0.0"
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+compileJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << '-parameters'
+}

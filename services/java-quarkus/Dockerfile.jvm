@@ -1,0 +1,46 @@
+FROM azul/zulu-openjdk-debian:21-latest AS build
+
+# Update the system to obtain the latest versions of dependencies.
+RUN apt-get update && apt-get -y upgrade
+
+# Copy all required dependencies of Java into the target Java home folder.
+RUN case `uname -m` in \
+        x86_64) LINUX_ARCH=x86_64; JAVA_ARCH=amd64 ;; \
+        aarch64) LINUX_ARCH=aarch64 ; JAVA_ARCH=arm64 ;; \
+        *) echo "unsupported architecture, exiting ..."; exit 1; ;; \
+    esac \
+  && mkdir -p /opt/java \
+  && cp -r /usr/lib/jvm/zulu21/* /opt/java \
+  && cp /lib/${LINUX_ARCH}-linux-gnu/libz.* /opt/java/lib/
+
+# The application is built from its artifacts.
+WORKDIR /app
+COPY gradle /app/gradle
+COPY build.gradle gradlew gradle.properties lombok.config settings.gradle /app/
+RUN /app/gradlew tasks # just for improved caching of container layers
+COPY src/main/java /app/src/main/java
+COPY src/main/resources /app/src/main/resources
+RUN /app/gradlew --no-daemon assemble
+
+# The final container image is based on a ready-made "distro-less" image.
+FROM gcr.io/distroless/base-nossl-debian12 AS runtime
+
+# Provide default values for language and locale.
+ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
+
+# Copy Java and its dependencies from the build container image.
+ENV JAVA_HOME=/opt/java PATH="/opt/java/bin/:${PATH}"
+COPY --from=build /opt/java /opt/java
+
+# Copy the application.
+COPY --from=build /app/build/quarkus-app/lib/boot/* /app/lib/boot/
+COPY --from=build /app/build/quarkus-app/lib/main/* /app/lib/main/
+COPY --from=build /app/build/quarkus-app/quarkus/* /app/quarkus/
+COPY --from=build /app/build/quarkus-app/quarkus-*.* /app/
+COPY --from=build /app/build/quarkus-app/app/* /app/app/
+
+# Use an unprivileged user for executing processes in the container.
+USER nonroot
+WORKDIR /home/nonroot
+
+ENTRYPOINT [ "/opt/java/bin/java", "-jar", "/app/quarkus-run.jar" ]

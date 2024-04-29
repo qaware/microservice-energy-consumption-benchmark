@@ -1,0 +1,40 @@
+services:
+
+  app:
+    build:
+      dockerfile: Dockerfile.${MODE}
+      context: .
+    image: "quarkus-${MODE}:latest"
+    environment:
+      - BACKEND_JWKS_URL=http://backend:8500
+      - MP_JWT_VERIFY_ISSUER=sample-issuer
+      - MP_JWT_VERIFY_AUDIENCES=sample-audience
+      - QUARKUS_REST_CLIENT_FETCH_URL=http://backend:8500
+      - QUARKUS_REST_CLIENT_PUSH_URL=http://backend:8500
+    ports:
+      - "8080:8080"
+    deploy:
+      resources:
+        limits:
+          cpus: '1.000'
+          memory: 500M
+    depends_on:
+      - backend
+    networks:
+      - docker-net
+
+  backend:
+    build: ../../tools/backend
+    image: "backend:latest"
+    ports:
+      - "8500:8500"
+    deploy:
+      resources:
+        limits:
+          cpus: '1.000'
+          memory: 500M
+    networks:
+      - docker-net
+
+networks:
+  docker-net:
