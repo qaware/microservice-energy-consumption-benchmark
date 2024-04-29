@@ -39,7 +39,7 @@ const cpuEnergyFactor = float64(45)                   // W
 const memoryEnergyFactor = float64(10) / float64(128) // W per GB
 const networkEnergyFactor = 11                        // Wh per GB
 const pue = float64(1.4)
-const gb = float64(1_000_000_000)
+const giga = float64(1_000_000_000)
 
 const nanosecondsPerHour = float64(3600 * 1_000_000_000)
 
@@ -89,16 +89,18 @@ func step(cnt container) {
 }
 
 func summary(iteration int) {
-	cpuWh := pue * cpuEnergyFactor * float64(lastCpuUsage-startCpuUsage) / nanosecondsPerHour
+	cpuBareUsage := float64(lastCpuUsage - startCpuUsage)
+	cpuWh := pue * cpuEnergyFactor * cpuBareUsage / nanosecondsPerHour
 
-	memoryWh := pue * memoryEnergyFactor * weightedMemoryUsage / float64(lastSystemTime-startSystemTime) / gb
+	memoryBareUsage := float64(lastSystemTime - startSystemTime)
+	memoryWh := pue * memoryEnergyFactor * weightedMemoryUsage / memoryBareUsage / giga
 
 	var networkTotalBytes uint64
 	for _, name := range lastNetworkNames {
 		networkTotalBytes += lastNetworkReceivedBytes[name] - startNetworkReceivedBytes[name]
 		networkTotalBytes += lastNetworkSentBytes[name] - startNetworkSentBytes[name]
 	}
-	networkWh := networkEnergyFactor * float64(networkTotalBytes) / gb
+	networkWh := networkEnergyFactor * float64(networkTotalBytes) / giga
 
 	coreWh := cpuWh + memoryWh
 	totalWh := cpuWh + memoryWh + networkWh
@@ -110,8 +112,8 @@ func summary(iteration int) {
 	totalWhs = append(totalWhs, totalWh)
 	initialized = false
 
-	fmt.Printf("[Iteration %2d]   CPU %.3f Wh   MEMORY %.3f Wh   NETWORK %.3f Wh   CORE %.3f WH   TOTAL %.3f Wh\n",
-		iteration, cpuWh, memoryWh, networkWh, coreWh, totalWh)
+	fmt.Printf("[Iteration %2d]   (cpu %f, mem %f, net %f)   CPU %.3f Wh   MEMORY %.3f Wh   NETWORK %.3f Wh   CORE %.3f WH   TOTAL %.3f Wh\n",
+		iteration, cpuBareUsage/nanosecondsPerHour, memoryBareUsage/giga, float64(networkTotalBytes)/giga, cpuWh, memoryWh, networkWh, coreWh, totalWh)
 }
 
 func totalSummary() {
