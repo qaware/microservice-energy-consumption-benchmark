@@ -3,22 +3,29 @@ import {SharedArray} from 'k6/data';
 import http from 'k6/http';
 import {randomIntBetween, randomString} from 'https://jslib.k6.io/k6-utils/1.2.0/index.js';
 
+const duration = '180s'
+const firstRate = 15
+const secondRate = 30
+const thirdRate = 5
+
 export const options = {
+    // skip URL, as the random path parameter causes to many time series to be collected otherwise
+    systemTags: ['proto', 'subproto', 'status', 'method', 'name', 'group', 'check', 'error', 'error_code', 'tls_version', 'scenario', 'service', 'expected_response'],
     scenarios: {
-        small: {
-            executor: 'constant-arrival-rate', duration: '300s', rate: 12, timeUnit: '1s',
+        first: {
+            executor: 'constant-arrival-rate', duration: duration, rate: firstRate, timeUnit: '1s',
             preAllocatedVUs: 100, maxVUs: 300,
-            exec: 'small',
+            exec: 'first',
         },
-        medium: {
-            executor: 'constant-arrival-rate', duration: '300s', rate: 33, timeUnit: '1s',
+        second: {
+            executor: 'constant-arrival-rate', duration: duration, rate: secondRate, timeUnit: '1s',
             preAllocatedVUs: 100, maxVUs: 1000,
-            exec: 'medium',
+            exec: 'second',
         },
-        large: {
-            executor: 'constant-arrival-rate', duration: '300s', rate: 5, timeUnit: '1s',
+        third: {
+            executor: 'constant-arrival-rate', duration: duration, rate: thirdRate, timeUnit: '1s',
             preAllocatedVUs: 100, maxVUs: 1000,
-            exec: 'large',
+            exec: 'third',
         },
     },
 };
@@ -50,7 +57,7 @@ const tokens = new SharedArray('tokens', function () {
     ];
 });
 
-export function small() {
+export function first() {
     const userIndex = randomIntBetween(0, tokens.length);
     const params = {
         headers: {
@@ -59,13 +66,13 @@ export function small() {
         },
     };
 
-    const resp = http.get(baseUrl + '/' + randomString(5, 'abcdef') + randomIntBetween(1000, 9000) + '/small', params);
+    const resp = http.get(baseUrl + '/' + randomString(5, 'abcdef') + randomIntBetween(1000, 9000) + '/first', params);
     check(resp, {
         'is status 200': (r) => r.status === 200,
     });
 }
 
-export function medium() {
+export function second() {
     const userIndex = randomIntBetween(0, tokens.length);
     const params = {
         headers: {
@@ -74,13 +81,13 @@ export function medium() {
         },
     };
 
-    const resp = http.get(baseUrl + '/' + randomString(5, 'ghijkl') + randomIntBetween(1000, 9000) + '/medium', params);
+    const resp = http.get(baseUrl + '/' + randomString(5, 'ghijkl') + randomIntBetween(1000, 9000) + '/second', params);
     check(resp, {
         'is status 200': (r) => r.status === 200,
     });
 }
 
-export function large() {
+export function third() {
     const userIndex = randomIntBetween(0, tokens.length);
     const params = {
         headers: {
@@ -104,7 +111,7 @@ export function large() {
         }
     );
 
-    const resp = http.post(baseUrl + '/' + randomString(5, 'mnopqr') + randomIntBetween(1000, 9000) + '/large', body, params);
+    const resp = http.post(baseUrl + '/' + randomString(5, 'mnopqr') + randomIntBetween(1000, 9000) + '/third', body, params);
     check(resp, {
         'is status 200': (r) => r.status === 200,
     });
