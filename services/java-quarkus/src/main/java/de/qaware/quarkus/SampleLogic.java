@@ -41,8 +41,8 @@ public class SampleLogic {
     @RestClient
     PushClient pushClient;
 
-    FirstResponse first(String id) {
-        Journal journal = fetchClient.getLarge(id);
+    FirstResponse first(String userId, String id) {
+        Journal journal = fetchClient.getLarge(userId + "++" + id);
 
         // some logic that is more than plain mapping
         List<FirstItem> firstItems = defaultList(journal.getArticles())
@@ -86,15 +86,15 @@ public class SampleLogic {
         return Math.abs(Objects.requireNonNullElse(from, 0) - Objects.requireNonNullElse(to, 0));
     }
 
-    SecondResponse second(String id) {
-        Planet planet = fetchClient.getMedium("sec-" + id);
+    SecondResponse second(String userId, String id) {
+        Planet planet = fetchClient.getMedium(userId + "++sec-" + id);
         String name1 = getName(planet.getMoons(), 0);
         String name2 = getName(planet.getMoons(), 1);
         String name3 = getName(planet.getMoons(), 2);
 
-        Opera opera1 = fetchClient.getSmall("foo#" + name1);
-        Opera opera2 = fetchClient.getSmall("bar#" + name2);
-        Opera opera3 = fetchClient.getSmall("quz#" + name3);
+        Opera opera1 = fetchClient.getSmall("foo_" + name1);
+        Opera opera2 = fetchClient.getSmall("bar_" + name2);
+        Opera opera3 = fetchClient.getSmall("quz_" + name3);
 
         return SecondResponse.builder()
             .relevant(defaultList(planet.getMissions())
@@ -135,7 +135,7 @@ public class SampleLogic {
         return Objects.requireNonNullElse(moon.getName(), "(none)");
     }
 
-    ThirdResponse third(String id, ThirdRequest request) {
+    ThirdResponse third(String userId, String id, ThirdRequest request) {
         Opera result1 = pushClient.postSmall("a.10:" + id, Opera.builder()
             .name("first " + request.value())
             .composedAt(request.timestamp())
@@ -148,7 +148,7 @@ public class SampleLogic {
             .numberOfActs(20)
             .build());
 
-        Journal journal = pushClient.postLarge("xg.3.f4:" + id, Journal.builder()
+        Journal journal = pushClient.postLarge(userId + "++xg.3.f4:" + id, Journal.builder()
             .name(request.value())
             .issue(request.count())
             .article(Article.builder()
@@ -163,7 +163,9 @@ public class SampleLogic {
 
         return ThirdResponse.builder()
             .name(journal.getName())
-            .description(journal.getTitle() + " " + journal.getPublisher() + " " + journal.getUrl())
+            .description(journal.getTitle() + " " +
+                Objects.requireNonNullElse(journal.getPublisher(), "") + " " +
+                Objects.requireNonNullElse(journal.getUrl(), ""))
             .createdAt(journal.getPublishedAt())
             .lastUpdatedAt(defaultList(journal.getArticles())
                 .stream()
