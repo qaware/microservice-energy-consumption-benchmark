@@ -35,24 +35,23 @@ type network struct {
 	SentBytes     uint64 `json:"tx_bytes"`
 }
 
-const cpuEnergyFactor = float64(45)                   // W
-const memoryEnergyFactor = float64(10) / float64(128) // W per GB
-const networkEnergyFactor = 11                        // Wh per GB
-const pue = float64(1.4)
+const cpuPower = float64(45)                        // in W
+const memoryPowerPerGb = float64(10) / float64(128) // in W per GB
+const networkEnergyPerGb = float64(11)              // Wh per GB
+const pue = float64(1.4)                            // power usage efficiency
 const giga = float64(1_000_000_000)
-
-const nanosecondsPerHour = float64(3600 * 1_000_000_000)
+const nanosecondsPerHour = 3600 * giga
 
 var initialized bool
-var startCpuUsage uint64
-var startSystemTime uint64
-var weightedMemoryUsage float64
+var startCpuUsageInNanos uint64
+var startSystemTimeInNanos uint64
+var weightedMemoryUsageInBytesForNanos float64
 var startNetworkReceivedBytes map[string]uint64
 var startNetworkSentBytes map[string]uint64
 
-var lastCpuUsage uint64
-var lastSystemTime uint64
-var lastMemoryUsage uint64
+var lastCpuUsageInNanos uint64
+var lastSystemTimeInNanos uint64
+var lastMemoryUsageInBytes uint64
 var lastNetworkNames []string
 var lastNetworkReceivedBytes map[string]uint64
 var lastNetworkSentBytes map[string]uint64
@@ -65,14 +64,14 @@ var totalWhs []float64
 
 func initialize(cnt container) {
 	initialized = true
-	startCpuUsage = cnt.Cpu.Usage.Total
-	startSystemTime = cnt.Cpu.SystemTime
-	weightedMemoryUsage = 0
+	startCpuUsageInNanos = cnt.Cpu.Usage.Total
+	startSystemTimeInNanos = cnt.Cpu.SystemTime
+	weightedMemoryUsageInBytesForNanos = 0
 	lastNetworkNames, startNetworkReceivedBytes, startNetworkSentBytes = getNetworkBytes(cnt.Networks)
 
-	lastCpuUsage = startCpuUsage
-	lastSystemTime = startSystemTime
-	lastMemoryUsage = cnt.Memory.Usage
+	lastCpuUsageInNanos = startCpuUsageInNanos
+	lastSystemTimeInNanos = startSystemTimeInNanos
+	lastMemoryUsageInBytes = cnt.Memory.Usage
 	lastNetworkReceivedBytes = startNetworkReceivedBytes
 	lastNetworkSentBytes = startNetworkSentBytes
 }
@@ -80,27 +79,32 @@ func initialize(cnt container) {
 func step(cnt container) {
 	currentSystemTime := cnt.Cpu.SystemTime
 
-	weightedMemoryUsage += average(lastMemoryUsage, cnt.Memory.Usage) * float64(currentSystemTime-lastSystemTime)
+	// Memory usage might be fluctuating over the runtime of the measurement.
+	// Instead of taking the average memory usage of the entire runtime, the average memory usage per timeframe,
+	// where each timeframe might differ in length, is summed up. This approach smooths out fluctuations of
+	// memory usage.
+	averageMemoryUsageInLastTimeframeUsageInBytes := average(lastMemoryUsageInBytes, cnt.Memory.Usage)
+	weightedMemoryUsageInLastTimeframe := averageMemoryUsageInLastTimeframeUsageInBytes * float64(currentSystemTime-lastSystemTimeInNanos)
+	weightedMemoryUsageInBytesForNanos += weightedMemoryUsageInLastTimeframe
 
-	lastCpuUsage = cnt.Cpu.Usage.Total
-	lastSystemTime = currentSystemTime
-	lastMemoryUsage = cnt.Memory.Usage
+	lastCpuUsageInNanos = cnt.Cpu.Usage.Total
+	lastSystemTimeInNanos = currentSystemTime
+	lastMemoryUsageInBytes = cnt.Memory.Usage
 	lastNetworkNames, lastNetworkReceivedBytes, lastNetworkSentBytes = getNetworkBytes(cnt.Networks)
 }
 
 func summary(iteration int) {
-	cpuBareUsage := float64(lastCpuUsage - startCpuUsage)
-	cpuWh := pue * cpuEnergyFactor * cpuBareUsage / nanosecondsPerHour
+	cpuUsageInNanos := float64(lastCpuUsageInNanos - startCpuUsageInNanos)
+	cpuWh := (pue * cpuPower * cpuUsageInNanos) / nanosecondsPerHour
 
-	memoryBareUsage := float64(lastSystemTime - startSystemTime)
-	memoryWh := pue * memoryEnergyFactor * weightedMemoryUsage / memoryBareUsage / giga
+	memoryWh := (pue * memoryPowerPerGb * (weightedMemoryUsageInBytesForNanos / giga)) / nanosecondsPerHour
 
 	var networkTotalBytes uint64
 	for _, name := range lastNetworkNames {
 		networkTotalBytes += lastNetworkReceivedBytes[name] - startNetworkReceivedBytes[name]
 		networkTotalBytes += lastNetworkSentBytes[name] - startNetworkSentBytes[name]
 	}
-	networkWh := networkEnergyFactor * float64(networkTotalBytes) / giga
+	networkWh := networkEnergyPerGb * float64(networkTotalBytes) / giga
 
 	coreWh := cpuWh + memoryWh
 	totalWh := cpuWh + memoryWh + networkWh
@@ -112,8 +116,11 @@ func summary(iteration int) {
 	totalWhs = append(totalWhs, totalWh)
 	initialized = false
 
-	fmt.Printf("[Iteration %2d]   (cpu %f, mem %f, net %f)   CPU %.3f Wh   MEMORY %.3f Wh   NETWORK %.3f Wh   CORE %.3f WH   TOTAL %.3f Wh\n",
-		iteration, cpuBareUsage/nanosecondsPerHour, memoryBareUsage/giga, float64(networkTotalBytes)/giga, cpuWh, memoryWh, networkWh, coreWh, totalWh)
+	fmt.Printf("[Iteration %2d]   CPU %.3f Wh   MEMORY %.3f Wh   NETWORK %.3f Wh   CORE %.3f WH   TOTAL %.3f Wh   (cpu %f, mem %f, net %f)\n",
+		iteration, cpuWh, memoryWh, networkWh, coreWh, totalWh,
+		cpuUsageInNanos/nanosecondsPerHour,
+		(weightedMemoryUsageInBytesForNanos/giga)/nanosecondsPerHour,
+		float64(networkTotalBytes)/giga)
 }
 
 func totalSummary() {
