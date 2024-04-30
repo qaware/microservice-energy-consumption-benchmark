@@ -3,9 +3,9 @@
 Docker statistics give insights into the usage of CPU, memory and network. Based on these numbers, the power usage
 of a container is computed as follows:
 
-* `cpuWh` = `pue` * `cpuFactor` * `cpuUsageInNs` / `expiredTimeInNs`
-* `memoryWh` = `pue` * `memoryFactor` * `averageMemoryUsageInGb`
-* `networkWh` = `networkFactor` * (`receivedGbs` + `sentGbs`)
+* `cpuWh` = `pue` * `cpuPower` * (`cpuUsageInNs` / `expiredTimeInNs`) / `nanosPerH`
+* `memoryWh` = `pue` * `memoryPowerPerGb` * `averageMemoryUsageInGb` * `expiredTimeInNs` / `nanosPerH`
+* `networkWh` = `networkEnergyPerGb` * (`receivedGbs` + `sentGbs`)
 * `totalWh` = `cpuWh` + `memoryWh` + `networkWh`
 
 The following constants are assumed in this model:
@@ -13,9 +13,9 @@ The following constants are assumed in this model:
 | field                             | value  | unit  |
 |-----------------------------------|--------|-------|
 | `pue` (power usage effectiveness) | 1.4    |       |
-| `cpuFactor`                       | 45     | W     |
-| `memoryFactor`                    | 10/128 | Wh/GB |
-| `networkFactor`                   | 11     | Wh/GB |
+| `cpuPower`                        | 45     | W     |
+| `memoryPowerPerGb`                | 10/128 | Wh/GB |
+| `networkEnergyPerGb`              | 11     | Wh/GB |
 
 This model is based on the [Greenframe model](https://github.com/marmelab/greenframe-cli/blob/main/src/model/README.md).
 
