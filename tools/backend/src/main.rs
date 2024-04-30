@@ -8,6 +8,7 @@ use tokio::time::{Duration, sleep};
 #[derive(Serialize)]
 pub struct Opera {
     id: String,
+    name: String,
     composer: String,
     composed_at: DateTime<Utc>,
     published_at: Option<DateTime<Utc>>,
@@ -134,6 +135,7 @@ async fn small_endpoint(path: web::Path<String>) -> impl Responder {
 
     HttpResponse::Ok().json(Opera {
         id,
+        name: random_string(3, 20),
         composer: random_string(3, 15),
         composed_at: random_datetime(),
         published_at: random_option(|| random_datetime()),
