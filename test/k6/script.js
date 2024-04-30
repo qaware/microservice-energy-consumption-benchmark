@@ -58,7 +58,7 @@ const tokens = new SharedArray('tokens', function () {
 });
 
 export function first() {
-    const userIndex = randomIntBetween(0, tokens.length);
+    const userIndex = randomIntBetween(0, tokens.length - 1);
     const params = {
         headers: {
             'Authorization': 'Bearer ' + tokens[userIndex],
@@ -73,7 +73,7 @@ export function first() {
 }
 
 export function second() {
-    const userIndex = randomIntBetween(0, tokens.length);
+    const userIndex = randomIntBetween(0, tokens.length - 1);
     const params = {
         headers: {
             'Authorization': 'Bearer ' + tokens[userIndex],
@@ -88,7 +88,7 @@ export function second() {
 }
 
 export function third() {
-    const userIndex = randomIntBetween(0, tokens.length);
+    const userIndex = randomIntBetween(0, tokens.length - 1);
     const params = {
         headers: {
             'Authorization': 'Bearer ' + tokens[userIndex],
