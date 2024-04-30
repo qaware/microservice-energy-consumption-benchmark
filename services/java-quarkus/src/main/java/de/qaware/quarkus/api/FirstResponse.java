@@ -8,7 +8,7 @@ import java.util.List;
 
 @Builder
 @RegisterForReflection
-public record SmallResponse(
+public record FirstResponse(
     String id,
     String hash,
     String version,
@@ -16,6 +16,6 @@ public record SmallResponse(
     @JsonProperty("total_number_of_items")
     long totalNumberOfItems,
     @JsonProperty("selected_items")
-    List<SmallItem> selectedItems
+    List<FirstItem> selectedItems
 ) {
 }

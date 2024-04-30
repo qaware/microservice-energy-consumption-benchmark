@@ -9,11 +9,16 @@ import java.util.List;
 
 @Builder
 @RegisterForReflection
-public record SmallItem(
+public record ThirdResponse(
     String name,
-    List<String> tags,
-    Integer length,
+    String description,
     @JsonProperty("created_at")
-    OffsetDateTime createdAt
+    OffsetDateTime createdAt,
+    @JsonProperty("last_updated_at")
+    OffsetDateTime lastUpdatedAt,
+    List<String> labels,
+    @JsonProperty("total_count")
+    long totalCount,
+    List<ThirdItem> items
 ) {
 }

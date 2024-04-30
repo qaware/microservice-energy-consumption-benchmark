@@ -1,6 +1,6 @@
 package de.qaware.quarkus;
 
-import de.qaware.quarkus.api.LargeRequest;
+import de.qaware.quarkus.api.ThirdRequest;
 import io.smallrye.common.annotation.RunOnVirtualThread;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
@@ -23,27 +23,27 @@ public class SampleResource {
     SampleLogic sampleLogic;
 
     @GET
-    @Path("{id}/small")
+    @Path("{id}/first")
     @Produces(MediaType.APPLICATION_JSON)
     @RunOnVirtualThread
-    public Response small(@PathParam("id") String id) {
-        return Response.ok(sampleLogic.small(id)).build();
+    public Response first(@PathParam("id") String id) {
+        return Response.ok(sampleLogic.first(id)).build();
     }
 
     @GET
-    @Path("{id}/medium")
+    @Path("{id}/second")
     @Produces(MediaType.APPLICATION_JSON)
     @RunOnVirtualThread
-    public Response medium(@PathParam("id") String id) {
-        return Response.ok(sampleLogic.medium(id)).build();
+    public Response second(@PathParam("id") String id) {
+        return Response.ok(sampleLogic.second(id)).build();
     }
 
     @POST
-    @Path("{id}/large")
+    @Path("{id}/third")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RunOnVirtualThread
-    public Response large(@PathParam("id") String id, @NotNull @Valid LargeRequest largeRequest) {
-        return Response.ok(sampleLogic.large(id, largeRequest)).build();
+    public Response third(@PathParam("id") String id, @NotNull @Valid ThirdRequest thirdRequest) {
+        return Response.ok(sampleLogic.third(id, thirdRequest)).build();
     }
 }

@@ -6,10 +6,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @RegisterForReflection
-public record LargeRequest(
+public record ThirdRequest(
     @NotNull @Size(min = 10) String value,
     @Min(0) int count,
-    @NotNull LocalDateTime timestamp) {
+    @NotNull OffsetDateTime timestamp) {
 }
