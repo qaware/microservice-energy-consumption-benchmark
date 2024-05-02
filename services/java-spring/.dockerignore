@@ -1,0 +1,8 @@
+*
+!gradle/*
+!build.gradle
+!gradlew
+!lombok.config
+!settings.gradle
+!src/main/java*
+!src/main/resources/*
