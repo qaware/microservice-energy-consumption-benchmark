@@ -15,7 +15,7 @@ resources:
 configMapGenerator:
   - name: rust-config
     literals:
-      - BACKEND_JWKS_URL=http://jwks:8500/.well-known/jwks.json
+      - BACKEND_JWKS_URL=http://jwks:8500
       - MP_JWT_VERIFY_ISSUER=sample-issuer
       - MP_JWT_VERIFY_AUDIENCES=sample-audience
       - QUARKUS_REST_CLIENT_FETCH_URL=http://fetch-api:8500
