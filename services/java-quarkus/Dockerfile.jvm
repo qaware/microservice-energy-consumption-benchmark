@@ -16,7 +16,7 @@ RUN case `uname -m` in \
 # The application is built from its artifacts.
 WORKDIR /app
 COPY gradle /app/gradle
-COPY build.gradle gradlew gradle.properties lombok.config settings.gradle /app/
+COPY build.gradle gradlew lombok.config settings.gradle /app/
 RUN /app/gradlew tasks # just for improved caching of container layers
 COPY src/main/java /app/src/main/java
 COPY src/main/resources /app/src/main/resources

@@ -28,5 +28,5 @@ public class Article {
     private Integer toPage;
     @JsonProperty("last_updated_at")
     private OffsetDateTime lastUpdatedAt;
-    protected List<Section> sections;
+    private List<Section> sections;
 }

@@ -1,7 +1,6 @@
 *
 !gradle/*
 !build.gradle
-!gradle.properties
 !gradlew
 !lombok.config
 !settings.gradle
