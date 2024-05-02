@@ -1,4 +1,5 @@
 use actix_web::{App, http::header::ContentType, HttpResponse, HttpServer, Responder, web};
+use actix_web::guard::{Guard, GuardContext};
 use chrono::{DateTime, Utc};
 use rand::{Rng, thread_rng};
 use rand::distributions::Alphanumeric;
@@ -86,10 +87,12 @@ async fn main() -> std::io::Result<()> {
                 .route("/live", web::get().to(health_endpoint)))
             .route("/.well-known/jwks.json", web::get().to(jwks_endpoint))
             .service(web::scope("/api/fetch/{id}")
+                .guard(authorized())
                 .route("/small", web::get().to(small_endpoint))
                 .route("/medium", web::get().to(medium_endpoint))
                 .route("/large", web::get().to(large_endpoint)))
             .service(web::scope("/api/push/{id}")
+                .guard(authorized())
                 .route("/small", web::post().to(small_endpoint))
                 .route("/medium", web::post().to(medium_endpoint))
                 .route("/large", web::post().to(large_endpoint)))
@@ -128,6 +131,23 @@ async fn jwks_endpoint() -> impl Responder {
                 }
               ]
             }"#)
+}
+
+pub fn authorized() -> impl Guard {
+    AuthorizedGuard
+}
+
+struct AuthorizedGuard;
+
+impl Guard for AuthorizedGuard {
+    fn check(&self, ctx: &GuardContext<'_>) -> bool {
+        if let Some(val) = ctx.head().headers.get("Authorization") {
+            if let Ok(auth) = val.to_str() {
+                return auth.starts_with("Bearer ") && auth.len() > "Bearer ".len();
+            }
+        }
+        false
+    }
 }
 
 async fn small_endpoint(path: web::Path<String>) -> impl Responder {

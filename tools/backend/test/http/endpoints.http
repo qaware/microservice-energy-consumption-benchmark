@@ -21,25 +21,46 @@ GET http://localhost:8500/.well-known/jwks.json
 ### small fetch request
 
 GET http://localhost:8500/api/fetch/123/small
+Authorization: Bearer irrelevant
+Accept: application/json
 
 ### medium fetch request
 
 GET http://localhost:8500/api/fetch/456/medium
+Authorization: Bearer irrelevant
+Accept: application/json
 
 ### large fetch request
 
 GET http://localhost:8500/api/fetch/789/large
+Authorization: Bearer irrelevant
+Accept: application/json
 
 ### small push request
 
-GET http://localhost:8500/api/push/123/small
+POST http://localhost:8500/api/push/123/small
+Authorization: Bearer irrelevant
+Content-Type: application/json
+Accept: application/json
+
+{}
 
 ### medium push request
 
-GET http://localhost:8500/api/push/456/medium
+POST http://localhost:8500/api/push/456/medium
+Authorization: Bearer irrelevant
+Content-Type: application/json
+Accept: application/json
+
+{}
 
 ### large push request
 
-GET http://localhost:8500/api/push/789/large
+POST http://localhost:8500/api/push/789/large
+Authorization: Bearer irrelevant
+Content-Type: application/json
+Accept: application/json
+
+{}
 
 ###
