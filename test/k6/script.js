@@ -4,13 +4,11 @@ import http from 'k6/http';
 import {randomIntBetween, randomString} from 'https://jslib.k6.io/k6-utils/1.2.0/index.js';
 
 const duration = '180s'
-const firstRate = 15
-const secondRate = 30
-const thirdRate = 5
+const firstRate = 15   // 15 -- 30 -- 45 --  60 --  75
+const secondRate = 30  // 30 -- 60 -- 90 -- 120 -- 150
+const thirdRate = 5    //  5 -- 10 -- 15 --  20 --  25
 
 export const options = {
-    // skip URL, as the random path parameter causes to many time series to be collected otherwise
-    systemTags: ['proto', 'subproto', 'status', 'method', 'name', 'group', 'check', 'error', 'error_code', 'tls_version', 'scenario', 'service', 'expected_response'],
     scenarios: {
         first: {
             executor: 'constant-arrival-rate', duration: duration, rate: firstRate, timeUnit: '1s',
@@ -66,7 +64,7 @@ export function first() {
         },
     };
 
-    const resp = http.get(baseUrl + '/' + randomString(5, 'abcdef') + randomIntBetween(1000, 9000) + '/first', params);
+    const resp = http.get(http.url`${baseUrl}/${randomString(5, 'abcdef') + randomIntBetween(1000, 9000)}/first`, params);
     check(resp, {
         'is status 200': (r) => r.status === 200,
     });
@@ -81,7 +79,7 @@ export function second() {
         },
     };
 
-    const resp = http.get(baseUrl + '/' + randomString(5, 'ghijkl') + randomIntBetween(1000, 9000) + '/second', params);
+    const resp = http.get(http.url`${baseUrl}/${randomString(5, 'ghijkl') + randomIntBetween(1000, 9000)}/second`, params);
     check(resp, {
         'is status 200': (r) => r.status === 200,
     });
@@ -111,7 +109,7 @@ export function third() {
         }
     );
 
-    const resp = http.post(baseUrl + '/' + randomString(5, 'mnopqr') + randomIntBetween(1000, 9000) + '/third', body, params);
+    const resp = http.post(http.url`${baseUrl}/${randomString(5, 'mnopqr') + randomIntBetween(1000, 9000)}/third`, body, params);
     check(resp, {
         'is status 200': (r) => r.status === 200,
     });
