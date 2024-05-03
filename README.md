@@ -78,7 +78,8 @@ Make the cluster accessible locally:
 aws eks update-kubeconfig --name green-eks-k8s
 ```
 
-Check that the local Kubernetes setup is configured for the EKS cluster, optionall switch to the EKS cluster via `use-context`:
+Check that the local Kubernetes setup is configured for the EKS cluster, optionally switch to the EKS cluster
+via `use-context`:
 
 ```shell
 kubectl config get-contexts
@@ -89,7 +90,6 @@ Check that three nodes are available:
 ```shell
 kubectl get nodes
 ```
-
 
 #### Allow access for other users
 
@@ -114,6 +114,87 @@ eksctl create iamidentitymapping \
 --username florian
 ```
 
+#### Green Metrics Tool
+
+Set up three EC2 instances with Ubuntu 22.04:
+
+* backend: accessible via SSH and port 8500
+* GMT: accessible via SSH and ports 9142 and 8080
+* k6: accessible via SSH
+
+Set up the backend EC2:
+
+```shell
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y curl build-essential gcc make
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+ssh-keygen -t ed25519 -C "GMT-backend-on-AWS"
+cat /home/ubuntu/.ssh/id_ed25519.pub
+# Go to https://gitlab.com/-/profile/keys and add the ssh key to gitlab
+git clone git@gitlab.com:qaware/internal/gilden/gse-gilde/t-stack-comparison.git
+cd t-stack-comparison/tools/backend
+cargo build --release
+./target/release/backend
+```
+
+Set up the GMT EC2:
+
+```shell
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y curl git make gcc python3 python3-pip python3-venv
+git clone https://github.com/green-coding-berlin/green-metrics-tool ~/green-metrics-tool
+sudo apt install ca-certificates curl gnupg lsb-release -y
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+echo "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt update
+sudo apt remove docker docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc -y
+sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+sudo usermod -aG docker ubuntu
+# log out and log in again
+cd ~/green-metrics-tool
+./install_linux.sh
+# TODO: python3 -m pip install -r metric_providers/psu/energy/ac/xgboost/machine/model/requirements.txt
+source venv/bin/activate
+cd docker
+docker compose up -d
+cd
+ssh-keygen -t ed25519 -C "GMT-setup-on-AWS"
+cat /home/ubuntu/.ssh/id_ed25519.pub
+# Go to https://gitlab.com/-/profile/keys and add the ssh key to gitlab
+git clone git@gitlab.com:qaware/internal/gilden/gse-gilde/t-stack-comparison.git
+```
+
+The GMT dashboard is available at http://metrics.green-coding.internal:9142/. Possible set up SSH port forwarding:
+
+```shell
+ssh -i <KEY-PEM> -N -L 9142:localhost:9142 ubuntu@<EC2-HOSTNAME>
+```
+
+Edit the local `/etc/hosts`:
+
+```text
+127.0.0.1       localhost api.green-coding.internal metrics.green-coding.internal
+```
+
+Set up the k6 EC2:
+
+```shell
+sudo apt update && sudo apt upgrade -y
+sudo gpg -k
+sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+sudo apt-get update
+sudo apt-get install k6
+ssh-keygen -t ed25519 -C "GMT-k6-on-AWS"
+cat /home/ubuntu/.ssh/id_ed25519.pub
+# Go to https://gitlab.com/-/profile/keys and add the ssh key to gitlab
+git clone git@gitlab.com:qaware/internal/gilden/gse-gilde/t-stack-comparison.git
+```
+
 ## Measurements
 
 ### Measuring with LiMo
@@ -130,33 +211,33 @@ Build and run the application:
 | Quarkus in JVM mode    | `MODE=jvm docker-compose up --build`    |
 | Quarkus in native mode | `MODE=native docker-compose up --build` |
 | Rust                   | `docker-compose up --build`             |
+| Spring                 | `docker-compose up --build`             |
 
 Optionally view the resource consumption via Docker statistics:
 
-| Implementation                                 | Command                      |
-|------------------------------------------------|------------------------------|
-| Go                                             | `docker stats go-app-1`      |
-| Nest                                           | `docker stats nest-app-1`    |
-| Quarkus (either in JVM mode or in native mode) | `docker stats quarkus-app-1` |
-| Rust                                           | `docker stats rust-app-1`    |
+| Implementation                                 | Command                           |
+|------------------------------------------------|-----------------------------------|
+| Go                                             | `docker stats go-gin-app-1`       |
+| Nest                                           | `docker stats js-nest-app-1`      |
+| Quarkus (either in JVM mode or in native mode) | `docker stats java-quarkus-app-1` |
+| Rust                                           | `docker stats rust-actix-app-1`   |
+| Spring                                         | `docker stats java-spring-app-1`  |
 
 Run the load test via k6:
 
-| Implementation                                 | Command                        |
-|------------------------------------------------|--------------------------------|
-| Go                                             | `k6 run test/k6/script.js`     |
-| Nest                                           | `k6 run test/k6/script.js`     |
-| Quarkus (either in JVM mode or in native mode) | `k6 run src/test/k6/script.js` |
-| Rust                                           | `k6 run test/k6/script.js`     |
+```shell
+k6 run test/k6/script.js
+```
 
 Run the measurement via [LiMo](../tools/limo/README.md) at the same time as the load tests:
 
-| Implementation                                 | Command                                   |
-|------------------------------------------------|-------------------------------------------|
-| Go                                             | `../tools/limo/limo go-app-1 10s 15`      |
-| Nest                                           | `../tools/limo/limo nest-app-1 10s 15`    |
-| Quarkus (either in JVM mode or in native mode) | `../tools/limo/limo quarkus-app-1 10s 15` |
-| Rust                                           | `../tools/limo/limo rust-app-1 10s 15`    |
+| Implementation                                 | Command                                       |
+|------------------------------------------------|-----------------------------------------------|
+| Go                                             | `./tools/limo/limo go-gin-app-1 10s 15`       |
+| Nest                                           | `./tools/limo/limo js-nest-app-1 10s 15`      |
+| Quarkus (either in JVM mode or in native mode) | `./tools/limo/limo java-quarkus-app-1 10s 15` |
+| Rust                                           | `./tools/limo/limo rust-app-1 10s 15`         |
+| Spring                                         | `./tools/limo/limo java-spring-app-1 10s 15`  |
 
 Stop the application:
 
@@ -168,93 +249,20 @@ docker-compose rm
 
 ### Measuring with the Green Metrics Tool
 
-`/etc/hosts`
+Run the Green Metrics Tool:
 
-```
-127.0.0.1       localhost api.green-coding.internal metrics.green-coding.internal
-```
+| Implementation                                 | Command                                                                                                      |
+|------------------------------------------------|--------------------------------------------------------------------------------------------------------------|
+| Go                                             | `python3 runner.py --name go --uri ~/t-stack-comparison/services/go-gin --allow-unsafe --docker-prune`       |
+| Nest                                           | `python3 runner.py --name go --uri ~/t-stack-comparison/services/js-nest --allow-unsafe --docker-prune`      |
+| Quarkus (either in JVM mode or in native mode) | `python3 runner.py --name go --uri ~/t-stack-comparison/services/java-quarkus --allow-unsafe --docker-prune` |
+| Rust                                           | `python3 runner.py --name go --uri ~/t-stack-comparison/services/rust-actix --allow-unsafe --docker-prune`   |
+| Spring                                         | `python3 runner.py --name go --uri ~/t-stack-comparison/services/java-spring --allow-unsafe --docker-prune`  |
 
-The Green Metrics Tool is executed in GitHub. We use a patched version of the green metrics tool,
-see https://github.com/andreaswe/green-metrics-tool/tree/codespaces.
-
-### Initialize the Codespace
-
-Go to https://github.com/andreaswe/green-metrics-tool/tree/codespaces and click on 'Code' --> '
-Codespaces' --> '...' --> 'New with options ...':
-
-![GitHub codespaces setup](green-metrics-tool-codespaces-setup.png)
-
-Select the following options when creating the codespace:
-
-* Branch: codespaces
-* Dev container configuration: Workshop
-* Region: Europe West
-* Machine type: 4-core
-
-Once the codespace was created, run the following command in the terminal:
+Run the load tests:
 
 ```shell
-source .devcontainer/workshop/codespace-setup.sh
-```
-
-The PORTS tab should now contain mappings for the ports 9142, 9143, and 9573. Make the port 9142 publicly visible by
-right-clicking on the mapping.
-
-![GitHub codespaces ports](green-metrics-tool-codespaces-ports.png)
-
-Open the mapping for port 9143 in the browser by right-clicking on the mapping and selecting
-the first entry in context menu.
-
-![GitHub codespaces open page](green-metrics-tool-codespaces-open.png)
-
-Create an SSH key in the codespaces terminal and register it with Gitlab:
-
-```shell
-# generate SSH key
-ssh-keygen -t ed25519 -C "your.name@qaware.de"
-# show generated public key
-cat /home/codespace/.ssh/id_ed25519.pub
-# Go to https://gitlab.com/-/profile/keys and add the public SSH key to Gitlab
-```
-
-Clone this repository into the codespace of the Green Metrics Tool:
-
-```shell
-git clone git@gitlab.com:qaware/internal/gilden/gse-gilde/t-stack-comparison.git
-```
-
-### Run green metrics tool
-
-Activate venv. Necessary, whenever the codespace was shutdown in between.
-
-```shell
-source venv/bin/activate
-```
-
-#### Quarkus JVM
-
-```shell
-python3 runner.py --name 'quarkus_jvm' --uri /workspaces/green-metrics-tool/t-stack-comparison/quarkus/ --allow-unsafe
-```
-
-#### Quarkus Native
-For **java/quarkus native** edit the [quarkus/usage_scenario.yml](quarkus/usage_scenario.yml) and
-replace `dockerfile: Dockerfile.jvm` with `dockerfile: Dockerfile.native`. Afterwards run:
-
-```shell
-python3 runner.py --name 'quarkus_native' --uri /workspaces/green-metrics-tool/t-stack-comparison/quarkus/ --allow-unsafe
-```
-
-#### Rust
-
-```shell
-python3 runner.py --name 'go' --uri /workspaces/green-metrics-tool/t-stack-comparison/go/ --allow-unsafe
-```
-
-#### Go
-
-```shell
-python3 runner.py --name 'rust' --uri /workspaces/green-metrics-tool/t-stack-comparison/rust/ --allow-unsafe
+k6 run test/k6/script.js
 ```
 
 ### Measuring with Kepler
