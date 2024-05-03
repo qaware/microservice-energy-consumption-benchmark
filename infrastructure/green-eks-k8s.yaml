@@ -4,7 +4,7 @@ kind: ClusterConfig
 metadata:
   name: green-eks-k8s
   region: eu-north-1
-  version: '1.28'
+  version: '1.29'
   tags:
     karpenter.sh/discovery: green-eks-k8s
 
@@ -35,9 +35,7 @@ cloudWatch:
 managedNodeGroups:
   - name: green-eks-k8s-ng
     instanceType: t3.large
-    # We use Bottlerocket, because Kepler needs support for cgroup v2, which neither Amazon Linux 2 nor Ubuntu 20.04 LTS have.
-    # Ubuntu 22.04 and Amazon Linux 2023 do support cgroup v2, but these are not supported by eksctl yet.
-    amiFamily: Bottlerocket
+    amiFamily: Ubuntu2204
     minSize: 1
     maxSize: 5
     desiredCapacity: 3
