@@ -5,7 +5,7 @@ docker_build('204306537988.dkr.ecr.eu-north-1.amazonaws.com/backend:latest', '..
 
 allow_k8s_contexts('FWE@green-eks-k8s.eu-north-1.eksctl.io')
 
-k8s_yaml(kustomize('kustomize/environment/local'))
+k8s_yaml(kustomize('kustomize'))
 
 k8s_resource(
     workload='rust',
