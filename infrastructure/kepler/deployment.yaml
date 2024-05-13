@@ -191,8 +191,7 @@ spec:
     spec:
       containers:
       - args:
-        - /usr/bin/kepler -v=5 -kernel-source-dir=/usr/share/kepler/kernel_sources
-          -redfish-cred-file-path=/etc/redfish/redfish.csv
+        - /usr/bin/kepler -v=5 -redfish-cred-file-path=/etc/redfish/redfish.csv -enable-cgroup-id=false
         command:
         - /bin/sh
         - -c
