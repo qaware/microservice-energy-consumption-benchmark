@@ -13,7 +13,7 @@ resources:
   - backend
 
 configMapGenerator:
-  - name: rust-config
+  - name: java-quarkus-config
     literals:
       - BACKEND_JWKS_URL=http://jwks:8500
       - MP_JWT_VERIFY_ISSUER=sample-issuer

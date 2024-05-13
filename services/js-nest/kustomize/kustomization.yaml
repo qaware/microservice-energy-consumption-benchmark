@@ -13,7 +13,7 @@ resources:
   - backend
 
 configMapGenerator:
-  - name: rust-config
+  - name: nest-config
     literals:
       - AUTH_JWT_JWKS_URL=http://jwks:8500
       - AUTH_JWT_EXPECTED_ISSUER=sample-issuer
