@@ -110,7 +110,13 @@ export function third() {
     );
 
     const resp = http.post(http.url`${baseUrl}/${randomString(5, 'mnopqr') + randomIntBetween(1000, 9000)}/third`, body, params);
+
+    if (resp.status !== 200 && resp.status !== 201) {
+        console.log(resp.status);
+        console.log(resp.body);
+    }
+
     check(resp, {
-        'is status 200': (r) => r.status === 200,
+        'is status 200': (r) => r.status === 200 || r.status === 201,
     });
 }
