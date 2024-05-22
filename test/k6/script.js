@@ -3,10 +3,10 @@ import {SharedArray} from 'k6/data';
 import http from 'k6/http';
 import {randomIntBetween, randomString} from 'https://jslib.k6.io/k6-utils/1.2.0/index.js';
 
-const duration = '180s'
-const firstRate = 15   // 15 -- 30 -- 45 --  60 --  75
-const secondRate = 30  // 30 -- 60 -- 90 -- 120 -- 150
-const thirdRate = 5    //  5 -- 10 -- 15 --  20 --  25
+const duration = __ENV.DURATION || '180s'
+const firstRate = __ENV.RATE * 15 || 75   // 15 -- 30 -- 45 --  60 --  75
+const secondRate = __ENV.RATE * 30 || 150 // 30 -- 60 -- 90 -- 120 -- 150
+const thirdRate = __ENV.RATE * 5 || 25    //  5 -- 10 -- 15 --  20 --  25
 
 export const options = {
     scenarios: {
