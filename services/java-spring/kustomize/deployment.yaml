@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: java-spring
-          image: 204306537988.dkr.ecr.eu-north-1.amazonaws.com/java-spring:latest
+          image: java-spring:latest
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:

@@ -1,9 +1,7 @@
 trigger_mode(TRIGGER_MODE_MANUAL)
 
-docker_build('204306537988.dkr.ecr.eu-north-1.amazonaws.com/nest:latest', '.')
-docker_build('204306537988.dkr.ecr.eu-north-1.amazonaws.com/backend:latest', '../../tools/backend')
-
-allow_k8s_contexts('FWE@green-eks-k8s.eu-north-1.eksctl.io')
+docker_build('nest:latest', '.')
+docker_build('backend:latest', '../../tools/backend')
 
 k8s_yaml(kustomize('kustomize'))
 

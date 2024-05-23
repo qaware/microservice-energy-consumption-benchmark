@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: go-backend
-          image: 204306537988.dkr.ecr.eu-north-1.amazonaws.com/backend:latest
+          image: backend:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8500

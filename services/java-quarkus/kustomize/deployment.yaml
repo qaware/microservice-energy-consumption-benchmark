@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: java-quarkus
-          image: 204306537988.dkr.ecr.eu-north-1.amazonaws.com/java-quarkus:latest
+          image: java-quarkus:latest
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:

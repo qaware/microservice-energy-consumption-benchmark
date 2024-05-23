@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: rust
-          image: 204306537988.dkr.ecr.eu-north-1.amazonaws.com/rust:latest
+          image: rust:latest
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
