@@ -109,11 +109,8 @@ Set up the backend EC2:
 sudo apt update && sudo apt upgrade -y
 sudo apt install -y curl build-essential gcc make
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-ssh-keygen -t ed25519 -C "GMT-backend-on-AWS"
-cat /home/ubuntu/.ssh/id_ed25519.pub
-# Go to https://gitlab.com/-/profile/keys and add the ssh key to gitlab
-git clone git@gitlab.com:qaware/internal/gilden/gse-gilde/t-stack-comparison.git
-cd t-stack-comparison/tools/backend
+git clone https://github.com/qaware/microservice-energy-consumption-benchmark.git
+cd microservice-energy-consumption-benchmark/tools/backend
 cargo build --release
 ./target/release/backend
 ```
@@ -143,10 +140,7 @@ source venv/bin/activate
 cd docker
 docker compose up -d
 cd
-ssh-keygen -t ed25519 -C "GMT-setup-on-AWS"
-cat /home/ubuntu/.ssh/id_ed25519.pub
-# Go to https://gitlab.com/-/profile/keys and add the ssh key to gitlab
-git clone git@gitlab.com:qaware/internal/gilden/gse-gilde/t-stack-comparison.git
+git clone https://github.com/qaware/microservice-energy-consumption-benchmark.git
 ```
 
 The GMT dashboard is available at http://metrics.green-coding.internal:9142/. Possible set up SSH port forwarding:
