@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: java-quarkus-backend
+spec:
+  selector:
+    matchLabels:
+      name: java-quarkus-backend
+  strategy:
+    type: RollingUpdate
+  revisionHistoryLimit: 10
+  template:
+    metadata:
+      labels:
+        name: java-quarkus-backend
+    spec:
+      containers:
+        - name: java-quarkus-backend
+          image: backend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8500
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "500Mi"
+            limits:
+              cpu: "1000m"
+              memory: "500Mi"

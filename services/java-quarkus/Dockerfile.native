@@ -1,0 +1,38 @@
+FROM quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-21 AS build
+USER root
+RUN microdnf install findutils
+RUN mkdir "/app" && chown quarkus:quarkus "/app"
+
+# Copy all required dependencies of Java into the target dependencies folder.
+RUN mkdir -p /opt/deps \
+  && cp /lib64/libz.* /opt/deps
+
+USER quarkus
+
+# The application is built from its artifacts.
+WORKDIR /app
+COPY gradle /app/gradle
+COPY build.gradle gradlew lombok.config settings.gradle /app/
+RUN /app/gradlew tasks # just for improved caching of container layers
+COPY src/main/java /app/src/main/java
+COPY src/main/resources /app/src/main/resources
+RUN /app/gradlew --no-daemon assemble -Dquarkus.package.type=native
+
+# The final container image is based on a ready-made "distro-less" image.
+FROM gcr.io/distroless/base-nossl-debian12 AS runtime
+
+# Provide default values for language and locale.
+ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
+
+# Copy dependencies from the build container image.
+COPY --from=build /opt/deps /lib/aarch64-linux-gnu
+COPY --from=build /opt/deps /lib/x86_64-linux-gnu
+
+# Copy the application.
+COPY --from=build /app/build/*-runner /usr/local/bin/app
+
+# Use an unprivileged user for executing processes in the container.
+USER nonroot
+WORKDIR /home/nonroot
+
+ENTRYPOINT ["/usr/local/bin/app", "-Dquarkus.http.host=0.0.0.0"]

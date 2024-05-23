@@ -1,0 +1,26 @@
+###
+
+GET {{host}}/api/sample/123/first
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
+GET {{host}}/api/sample/123/second
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
+POST {{host}}/api/sample/123/third
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "value": "some longer text without any sense",
+  "count": 15,
+  "timestamp": "2023-12-18T08:57:14Z"
+}
+
+###

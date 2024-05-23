@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rust-backend
+spec:
+  type: ClusterIP
+  ports:
+    - name: backend
+      protocol: TCP
+      port: 8500
+  selector:
+    name: rust-backend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jwks
+spec:
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 8500
+  selector:
+    name: rust-backend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fetch-api
+spec:
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 8500
+  selector:
+    name: rust-backend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: push-api
+spec:
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 8500
+  selector:
+    name: rust-backend

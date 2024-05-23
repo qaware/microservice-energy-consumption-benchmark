@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-backend
+spec:
+  selector:
+    matchLabels:
+      name: go-backend
+  strategy:
+    type: RollingUpdate
+  revisionHistoryLimit: 10
+  template:
+    metadata:
+      labels:
+        name: go-backend
+    spec:
+      containers:
+        - name: go-backend
+          image: backend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8500
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "500Mi"
+            limits:
+              cpu: "1000m"
+              memory: "500Mi"

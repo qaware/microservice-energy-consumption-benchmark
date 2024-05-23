@@ -1,0 +1,59 @@
+---
+name: Java/Quarkus
+author: QAware
+description: Load test for the Java/Quarkus implementation
+
+networks:
+  docker-net:
+
+services:
+  app:
+    build:
+      dockerfile: Dockerfile.jvm
+      # use the following line for native execution:
+      # dockerfile: Dockerfile.native
+      context: .
+    image: "quarkus-jvm:latest"
+    # use the following line for native execution:
+    # image: "quarkus-native:latest"
+    environment:
+      - BACKEND_JWKS_URL=http://host.lima.internal:8500
+      - MP_JWT_VERIFY_ISSUER=sample-issuer
+      - MP_JWT_VERIFY_AUDIENCES=sample-audience
+      - QUARKUS_REST_CLIENT_FETCH_URL=http://host.lima.internal:8500
+      - QUARKUS_REST_CLIENT_PUSH_URL=http://host.lima.internal:8500
+    ports:
+      - "8080:8080"
+    deploy:
+      resources:
+        limits:
+          cpus: '1.000'
+          memory: 500M
+    networks:
+      - docker-net
+
+  wait:
+    image: "busybox"
+    networks:
+      - docker-net
+
+flow:
+  - name: Warming up
+    container: wait
+    commands:
+      - type: console
+        command: sleep 120
+        note: Run the load test manually now
+        read-notes-stdout: true
+        log-stdout: true
+        log-stderr: true
+
+  - name: Running the load tests
+    container: wait
+    commands:
+      - type: console
+        command: sleep 200
+        note: Run the load test manually now
+        read-notes-stdout: true
+        log-stdout: true
+        log-stderr: true
