@@ -5,11 +5,11 @@ disadvantages. This comparison attempts to compare several popular languages and
 frameworks with respect to energy consumption. A sample microservice serves as benchmark. Currently,
 the following languages and frameworks are compared:
 
-* Go with [Gin](https://gin-gonic.com/), see [Go microservice](services/go-gin/README.md),
+* Go with [Gin](https://gin-gonic.com/), see [Go microservice](services/go-gin),
 * Java with [Quarkus](https://quarkus.io/) in JVM mode and in native mode,
   see [Quarkus microservice](services/java-quarkus/README.md),
-* Java with [Spring](https://spring.io/) (on JVM), see [Spring microservice](services/java-spring/README.md),
-* Rust with [Actix Web](https://actix.rs/), see [Rust microservice](services/rust-actix/README.md),
+* Java with [Spring](https://spring.io/) (on JVM), see [Spring microservice](services/java-spring),
+* Rust with [Actix Web](https://actix.rs/), see [Rust microservice](services/rust-actix),
 * Javascript/TypeScript with [Node.js](https://nodejs.org/) and [nest](https://nestjs.com/),
   see [Nest microservice](services/js-nest/README.md).
 
@@ -75,7 +75,7 @@ Run the load test via k6 (you have to run them one by one!):
 k6 run test/k6/script.js
 ```
 
-Run the measurement via [LiMo](../tools/limo/README.md) at the same time as the load tests:
+Run the measurement via [LiMo](./tools/limo/README.md) at the same time as the load tests:
 
 | Implementation                                 | Command                                       |
 |------------------------------------------------|-----------------------------------------------|
@@ -185,7 +185,7 @@ Run the Green Metrics Tool:
 | Rust                                           | `python3 runner.py --name go --uri ./services/rust-actix --allow-unsafe --docker-prune`   |
 | Spring                                         | `python3 runner.py --name go --uri ./services/java-spring --allow-unsafe --docker-prune`  |
 
-You can then [run the load test](#running-the-loadtest) and view the results in the GMT dashboard.
+You can then [run the load test](#running-the-load-test) and view the results in the GMT dashboard.
 
 ### Measuring with Kepler
 
@@ -193,7 +193,7 @@ You can then [run the load test](#running-the-loadtest) and view the results in 
 
 Please follow the instructions
 from [Deploy using Helm Chart](https://sustainable-computing.io/installation/kepler-helm/) to deploy Kepler in a
-Kubernetes cluster of your choice. Make sure you also setup Prometheus and Grafana, if you haven't already, and import
+Kubernetes cluster of your choice. Make sure you also set up Prometheus and Grafana, if you haven't already, and import
 the [Kepler dashboard](https://github.com/sustainable-computing-io/kepler/blob/main/grafana-dashboards/Kepler-Exporter.json)
 into Grafana.
 
@@ -201,9 +201,9 @@ When you're done, you can set up one of the services using [Tilt](https://tilt.d
 directory of the service you want to measure. This will build the Docker image and deploy it to your Kubernetes cluster.
 It will also establish a port-forward to the service, so you can directly run your k6 tests against it.
 
-You can the [run the load test](#running-the-loadtest) and view the results in the Grafana dashboard.
+You can the [run the load test](#running-the-load-test) and view the results in the Grafana dashboard.
 
-### Running the loadtest
+### Running the load test
 
 Run the load tests by executing
 
