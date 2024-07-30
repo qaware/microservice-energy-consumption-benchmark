@@ -2,7 +2,7 @@ module limo
 
 go 1.22.2
 
-require github.com/docker/docker v26.0.1+incompatible
+require github.com/docker/docker v26.1.4+incompatible
 
 require (
 	github.com/Microsoft/go-winio v0.4.14 // indirect
