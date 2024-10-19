@@ -20,7 +20,7 @@
     "@nestjs/core": "^10.0.0",
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/mapped-types": "*",
-    "@nestjs/platform-fastify": "^10.3.8",
+    "@nestjs/platform-fastify": "^10.4.5",
     "@willsoto/nestjs-prometheus": "^6.0.0",
     "axios": "^1.7.4",
     "prom-client": "^15.1.2",
