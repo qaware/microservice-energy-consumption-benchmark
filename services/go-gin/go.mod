@@ -5,7 +5,7 @@ go 1.22
 require (
 	github.com/MicahParks/keyfunc/v2 v2.1.0
 	github.com/gin-gonic/gin v1.9.1
-	github.com/golang-jwt/jwt/v5 v5.2.1
+	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/prometheus/client_golang v1.19.0
 	github.com/rs/zerolog v1.32.0
 )
