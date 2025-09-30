@@ -22,7 +22,7 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-fastify": "^10.4.5",
     "@willsoto/nestjs-prometheus": "^6.0.0",
-    "axios": "^1.7.4",
+    "axios": "^1.12.2",
     "prom-client": "^15.1.2",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1"
